@@ -1,0 +1,19 @@
+.mb-2 {
+    color: darkolivegreen !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.p-button.p-button-success, .p-buttonset.p-button-success > .p-button, .p-splitbutton.p-button-success > .p-button, .p-fileupload-choose.p-button-success {
+    color: #ffffff;
+    background: darkolivegreen;
+    border: 1px solid rgb(49, 107, 47);
+}
+
+img{
+    width: -webkit-fill-available;
+    align-self: center
+}
+
+.loglog{
+    width: 240px;
+}
