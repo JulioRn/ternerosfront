@@ -17,6 +17,8 @@ import { Toast } from 'primereact/toast';
 import { useNavigate } from "react-router-dom";
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
+import ResponsiveAppBar from './ResponsiveAppBar';
+
 
 
 
@@ -24,12 +26,14 @@ import { classNames } from 'primereact/utils';
 
 export default function GestionUsuarios() {
 
+    
+
     const navigate = useNavigate();
     const toast = useRef(null);
 
     const [selectedUsuarios, setSelectedUsuarios] = useState(null);
 
-    const [productDialog, setUsuarioDialog] = useState(false);
+    const [usuarioDialog, setUsuarioDialog] = useState(false);
 
     const [usuarios, setUsuarios] = useState([]);
     useEffect(() => {
@@ -41,7 +45,7 @@ export default function GestionUsuarios() {
     const UsuarioGuardar = () => {
         setSubmitted(true);
 
-        
+
 
         var data = {
             'id': null,
@@ -54,38 +58,41 @@ export default function GestionUsuarios() {
             'acceso': acceso,
         }
         let _usuarios = [...usuarios];
-        let _usuario = {...data};
+        let _usuario = { ...data };
 
-        if( nombre != null){
-        fetch("http://localhost:8080/usuario/agregar", {
-            method: 'POST',
-            headers: {
-                Accept: 'application/form-data',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        }
-
-        )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    alert(result['message'])
-                    if (result['status'] === 'ok') {
-                        window.location.href = '/';
-                        _usuarios.push(_usuario);
-            setUsuarios(_usuarios);
-        setUsuarioDialog(false);
-                    }
-                }
+        if (nombre === '') {
+            console.log("errorrrr");
+            console.log(data);
+            console.log(nombre)
+        } else {
+            console.log("nose")
+            console.log(nombre)
+            fetch("http://localhost:8080/usuario/agregar", {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/form-data',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            }
 
             )
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        alert(result['message'])
+                        if (result['status'] === 'ok') {
+                            
+                        }
+                    }
+
+                )
+
+                _usuarios.push(_usuario);
+                setUsuarios(_usuarios);     
+        setUsuarioDialog(false);
 
         }
-                
-                
-
-        
 
     }
 
@@ -100,6 +107,7 @@ export default function GestionUsuarios() {
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
+
     const initFilters1 = () => {
         setFilters1({
             'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -109,7 +117,7 @@ export default function GestionUsuarios() {
             'contra': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'mail': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'telefono': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-            'cedula':{ operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            'cedula': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         });
         setGlobalFilterValue1('');
     }
@@ -134,13 +142,13 @@ export default function GestionUsuarios() {
     }
 
     const UsuarioDelete = () => {
-        fetch("http://localhost:8080/usuario/eliminar/" + selectedUsuarios.id)
+        fetch("http://localhost:8080/usuario/eliminar/" + selectedUsuarios.id_usuario)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Usuario Eliminado', life: 3000 })
 
 
             );
-        let _usuarios = usuarios.filter(val => val.id !== selectedUsuarios.id);
+        let _usuarios = usuarios.filter(val => val.id_usuario !== selectedUsuarios.id_usuario);
         setUsuarios(_usuarios);
         setDeleteUsuarioDialog(false);
     }
@@ -157,6 +165,7 @@ export default function GestionUsuarios() {
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
                 <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
+                
             </React.Fragment>
         )
     }
@@ -218,15 +227,19 @@ export default function GestionUsuarios() {
     );
 
 
+
+
     return (
 
 
 
         <div className="datatable-crud-demo">
+            <ResponsiveAppBar />
+            <br />
             <Toast ref={toast} />
             <div className="card">
                 <Toolbar className="p-toolbar p-component mb-4" left={leftToolbarTemplate} ></Toolbar>
-                <DataTable value={usuarios} responsiveLayout="scroll" selection={selectedUsuarios} onSelectionChange={(e) => setSelectedUsuarios(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                <DataTable value={usuarios} reflow="true" selection={selectedUsuarios} onSelectionChange={(e) => setSelectedUsuarios(e.value)} dataKey="id_usuario" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} usuarios" filters={filters1} globalFilterFields={['nombre', 'apellido', 'cedula', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="cedula" header="CEDULA" r></Column>
@@ -236,41 +249,47 @@ export default function GestionUsuarios() {
                     <Column field="telefono" header="TELEFONO"></Column>
                     <Column field="acceso" header="ACCESO"></Column>
                     <Column field="contra" header="CONTRA"></Column>
-                    <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
+                    <Column body={actionBodyTemplate} exportable={false} ></Column>
                 </DataTable>
                 <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
             </div>
 
-            <Dialog visible={productDialog} style={{ width: '450px' }} header="Datos Usuario" modal className="p-fluid" footer={usuarioDialogFooter} onHide={hideDialog}>
+            <Dialog visible={usuarioDialog} style={{ width: '450px' }} header="Datos Usuario" modal className="p-fluid" footer={usuarioDialogFooter} onHide={hideDialog}>
 
                 <div className="field">
                     <label htmlFor="name">Nombre</label>
-                    <InputText id="name" onChange={(e) => setNombre(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nombre })}/>
-                    {submitted && !nombre && <small className="p-error">Name is required.</small>}
+                    <InputText id="name" onChange={(e) => setNombre(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nombre })} />
+                    {submitted && !nombre && <small className="p-error">Ingresar nombre</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="apellido">Apellido</label>
-                    <InputText id="apellido" onChange={(e) => setApellido(e.target.value)} />
+                    <InputText id="apellido" onChange={(e) => setApellido(e.target.value)} required className={classNames({ 'p-invalid': submitted && !apellido })} />
+                    {submitted && !apellido && <small className="p-error">Ingresar apellido</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="cedula">Cedula</label>
-                    <InputText id="cedula" onChange={(e) => setCedula(e.target.value)} />
+                    <InputText id="cedula" onChange={(e) => setCedula(e.target.value)} required className={classNames({ 'p-invalid': submitted && !cedula })} />
+                    {submitted && !cedula && <small className="p-error">Ingresar Cedula</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="mail">Mail</label>
-                    <InputText id="mail" onChange={(e) => setMail(e.target.value)} />
+                    <InputText id="mail" onChange={(e) => setMail(e.target.value)} required className={classNames({ 'p-invalid': submitted && !mail })} />
+                    {submitted && !mail && <small className="p-error">Ingresar Mail</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="tel">Telefono</label>
-                    <InputText id="tel" onChange={(e) => setTelefono(e.target.value)} />
+                    <InputText id="tel" onChange={(e) => setTelefono(e.target.value)} required className={classNames({ 'p-invalid': submitted && !telefono })} />
+                    {submitted && !telefono && <small className="p-error">Ingresar Telefono</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="acceso">Acceso</label>
-                    <InputText id="acceso" onChange={(e) => setAcceso(e.target.value)} />
+                    <InputText id="acceso" onChange={(e) => setAcceso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !acceso })} />
+                    {submitted && !acceso && <small className="p-error">Ingresar Acceso</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="contra">Contraseña</label>
-                    <InputText id="contra" onChange={(e) => setContra(e.target.value)}/>
+                    <InputText id="contra" onChange={(e) => setContra(e.target.value)} required className={classNames({ 'p-invalid': submitted && !contra })} />
+                    {submitted && !contra && <small className="p-error">Ingresar Contraseña</small>}
                 </div>
 
             </Dialog>

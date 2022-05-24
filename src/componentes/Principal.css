@@ -9,11 +9,26 @@
     border: 1px solid rgb(49, 107, 47);
 }
 
+#log{
+    width: auto;
+    margin: 1em;
+}
+
+#loglog{
+    width: 240px;
+}
+
 img{
     width: -webkit-fill-available;
     align-self: center
 }
 
-.loglog{
-    width: 240px;
+
+
+.css-hip9hq-MuiPaper-root-MuiAppBar-root{
+    background-color: darkolivegreen !important;
+}
+
+.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root{
+display: grid !important;
 }

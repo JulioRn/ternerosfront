@@ -18,7 +18,7 @@ export default function IniciarSesion() {
         <div className="flex align-items-center justify-content-center">
             <div className="surface-card p-4 shadow-2 border-round w-full lg:w-6">
                 <div className="text-center mb-5">
-                    <img className="loglog" src="CT-MOV.png" onError={(e) => e.target.src = 'https://i.ibb.co/HYnjnRQ/CT-MOV.png'} alt="hyper" height= "auto"  />
+                    <img id="loglog" src="CT-MOV.png" onError={(e) => e.target.src = 'https://i.ibb.co/GHCb0DN/Login.png'} alt="hyper" height= "auto"  />
 
                 </div>
 
