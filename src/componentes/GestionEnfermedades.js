@@ -72,7 +72,7 @@ export default function GestionEnfermedades() {
         if (fechaIn === '') {
             console.log("Error");
         } else {
-            fetch("http://localhost:8080/enfermedad/agregar", {
+            fetch("http://54.83.111.43:8080/enfermedad/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -153,7 +153,7 @@ export default function GestionEnfermedades() {
     }
 
     const EnfermedadesGet = () => {
-        fetch("http://localhost:8080/enfermedad/getAll")
+        fetch("http://54.83.111.43:8080/enfermedad/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -163,7 +163,7 @@ export default function GestionEnfermedades() {
     }
 
     const EnfermedadDelete = () => {
-        fetch("http://localhost:8080/enfermedad/eliminar/" + selectedEnfermedades.id_enfermedad)
+        fetch("http://54.83.111.43:8080/enfermedad/eliminar/" + selectedEnfermedades.id_enfermedad)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Enfermedad Eliminado', life: 3000 })
 
@@ -187,6 +187,15 @@ export default function GestionEnfermedades() {
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
                 <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
                 
+            </React.Fragment>
+        )
+    }
+
+    const rightToolbarTemplate = () => {
+        return (
+            <React.Fragment>
+                 <Button type="button" icon="pi pi-file-pdf" label="PDF" onClick={exportPdf} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
+                <Button type="button" icon="pi pi-file-excel" label="EXCEL" onClick={exportExcel} className="p-button-success mr-2" data-pr-tooltip="PDF" />
             </React.Fragment>
         )
     }
@@ -248,6 +257,55 @@ export default function GestionEnfermedades() {
     );
 
 
+    const cols = [
+        { field: 'cedula', header: 'Cedula' },
+        { field: 'nombre', header: 'Nombre' },
+        {field: 'apellido', header:'APELLIDO'},
+        {field: 'mail', header:'MAIL'},
+        {field: 'telefono', header:'TELEFONO'},
+        {field: 'acceso', header:'ACCESO'},
+        {field: 'contra', header:'CONTRA'}
+    ];
+
+    const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
+
+
+
+    const exportPdf = () => {
+        import('jspdf').then(jsPDF => {
+            import('jspdf-autotable').then(() => {
+                const doc = new jsPDF.default(0, 0);
+                doc.autoTable(exportColumns, enfermedades);
+                doc.save('Usuarios.pdf');
+            })
+        })
+    }
+
+
+    const exportExcel = () => {
+        import('xlsx').then(xlsx => {
+            const worksheet = xlsx.utils.json_to_sheet(enfermedades);
+            const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+            const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            saveAsExcelFile(excelBuffer, 'Usuarios');
+        });
+    }
+
+    const saveAsExcelFile = (buffer, fileName) => {
+        import('file-saver').then(module => {
+            if (module && module.default) {
+                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+                let EXCEL_EXTENSION = '.xlsx';
+                const data = new Blob([buffer], {
+                    type: EXCEL_TYPE
+                });
+
+                module.default.saveAs(data, fileName + EXCEL_EXTENSION);
+            }
+        });
+    }
+
+
 
 
     return (
@@ -259,8 +317,8 @@ export default function GestionEnfermedades() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="p-toolbar p-component mb-4" left={leftToolbarTemplate} ></Toolbar>
-                <DataTable  value={enfermedades} reflow="true" selection={selectedEnfermedades} onSelectionChange={(e) => setSelectedEnfermedades(e.value)} dataKey="id_enfermedad" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+               <DataTable  value={enfermedades} reflow="true" selection={selectedEnfermedades} onSelectionChange={(e) => setSelectedEnfermedades(e.value)} dataKey="id_enfermedad" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} enfermedades" filters={filters1} globalFilterFields={['fechaIn', 'temRec', 'deshidratacion', 'descOcular', 'tos', 'diarrea', 'descNasal']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="nombre" header="NOMBRE"></Column>

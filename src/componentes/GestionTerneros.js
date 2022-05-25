@@ -83,7 +83,7 @@ export default function GestionTerneros() {
         if (nroTernero === '') {
             console.log("Error");
         } else {
-            fetch("http://localhost:8080/ternero/agregar", {
+            fetch("http://54.83.111.43:8080/ternero/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -158,7 +158,7 @@ export default function GestionTerneros() {
     }
 
     const TernerosGet = () => {
-        fetch("http://localhost:8080/ternero/getAll")
+        fetch("http://54.83.111.43:8080/ternero/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -168,7 +168,7 @@ export default function GestionTerneros() {
     }
 
     const TerneroDelete = () => {
-        fetch("http://localhost:8080/ternero/eliminar/" + selectedTerneros.id)
+        fetch("http://54.83.111.43:8080/ternero/eliminar/" + selectedTerneros.id)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Ternero Eliminado', life: 3000 })
 
@@ -192,6 +192,15 @@ export default function GestionTerneros() {
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
                 <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
 
+            </React.Fragment>
+        )
+    }
+
+    const rightToolbarTemplate = () => {
+        return (
+            <React.Fragment>
+                 <Button type="button" icon="pi pi-file-pdf" label="PDF" onClick={exportPdf} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
+                <Button type="button" icon="pi pi-file-excel" label="EXCEL" onClick={exportExcel} className="p-button-success mr-2" data-pr-tooltip="PDF" />
             </React.Fragment>
         )
     }
@@ -253,6 +262,55 @@ export default function GestionTerneros() {
     );
 
 
+    const cols = [
+        { field: 'cedula', header: 'Cedula' },
+        { field: 'nombre', header: 'Nombre' },
+        { field: 'apellido', header: 'APELLIDO' },
+        { field: 'mail', header: 'MAIL' },
+        { field: 'telefono', header: 'TELEFONO' },
+        { field: 'acceso', header: 'ACCESO' },
+        { field: 'contra', header: 'CONTRA' }
+    ];
+
+    const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
+
+
+
+    const exportPdf = () => {
+        import('jspdf').then(jsPDF => {
+            import('jspdf-autotable').then(() => {
+                const doc = new jsPDF.default(0, 0);
+                doc.autoTable(exportColumns, terneros);
+                doc.save('Usuarios.pdf');
+            })
+        })
+    }
+
+
+    const exportExcel = () => {
+        import('xlsx').then(xlsx => {
+            const worksheet = xlsx.utils.json_to_sheet(terneros);
+            const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+            const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            saveAsExcelFile(excelBuffer, 'Usuarios');
+        });
+    }
+
+    const saveAsExcelFile = (buffer, fileName) => {
+        import('file-saver').then(module => {
+            if (module && module.default) {
+                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+                let EXCEL_EXTENSION = '.xlsx';
+                const data = new Blob([buffer], {
+                    type: EXCEL_TYPE
+                });
+
+                module.default.saveAs(data, fileName + EXCEL_EXTENSION);
+            }
+        });
+    }
+
+
 
 
     return (
@@ -264,8 +322,8 @@ export default function GestionTerneros() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="p-toolbar p-component mb-4" left={leftToolbarTemplate} ></Toolbar>
-                <DataTable value={terneros} reflow="true"  selection={selectedTerneros} onSelectionChange={(e) => setSelectedTerneros(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                <DataTable value={terneros} reflow="true" selection={selectedTerneros} onSelectionChange={(e) => setSelectedTerneros(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} terneros" filters={filters1} globalFilterFields={['nroTernero', 'fechaNac', 'peso', 'fechaRef', 'tiempo', 'parto', 'cantCal']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="nroTernero" header="NRO TERNERO"></Column>
@@ -300,7 +358,7 @@ export default function GestionTerneros() {
                 </div>
                 <div className="field">
                     <label htmlFor="fechaNac">Fecha Nacimiento</label>
-                    <Calendar id="fechaNac"  onChange={(e) => setFechaNac(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !tiempo })}></Calendar>                    {submitted && !fechaNac && <small className="p-error">Ingresar fechaNac</small>}
+                    <Calendar id="fechaNac" onChange={(e) => setFechaNac(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !tiempo })}></Calendar>                    {submitted && !fechaNac && <small className="p-error">Ingresar fechaNac</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="peso">Peso Nacimiento</label>
@@ -326,7 +384,7 @@ export default function GestionTerneros() {
                 <div className="field">
                     <label htmlFor="tiempo">Tiempo/Nacimiento</label>
                     <InputText id="tiempo" onChange={(e) => setTiempo(e.target.value)} required className={classNames({ 'p-invalid': submitted && !tiempo })} />
-                
+
                     {submitted && !tiempo && <small className="p-error">Ingresar Tiempo</small>}
                 </div>
 
@@ -369,9 +427,9 @@ export default function GestionTerneros() {
                 </div>
 
 
-                
-                
-                
+
+
+
 
             </Dialog>
 

@@ -56,7 +56,7 @@ export default function GestionAlimentos() {
 
         if (nombre === '') {
         } else {
-            fetch("http://localhost:8080/alimento/agregar", {
+            fetch("http://54.83.111.43:8080/alimento/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -113,7 +113,7 @@ export default function GestionAlimentos() {
     }
 
     const AlimentosGet = () => {
-        fetch("http://localhost:8080/alimento/getAll")
+        fetch("http://54.83.111.43:8080/alimento/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -123,7 +123,7 @@ export default function GestionAlimentos() {
     }
 
     const AlimentoDelete = () => {
-        fetch("http://localhost:8080/alimento/eliminar/" + selectedAlimentos.id)
+        fetch("http://54.83.111.43:8080/alimento/eliminar/" + selectedAlimentos.id)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Alimento Eliminado', life: 3000 })
 
@@ -147,6 +147,15 @@ export default function GestionAlimentos() {
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
                 <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
                 
+            </React.Fragment>
+        )
+    }
+
+    const rightToolbarTemplate = () => {
+        return (
+            <React.Fragment>
+                 <Button type="button" icon="pi pi-file-pdf" label="PDF" onClick={exportPdf} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
+                <Button type="button" icon="pi pi-file-excel" label="EXCEL" onClick={exportExcel} className="p-button-success mr-2" data-pr-tooltip="PDF" />
             </React.Fragment>
         )
     }
@@ -208,6 +217,55 @@ export default function GestionAlimentos() {
     );
 
 
+    const cols = [
+        { field: 'cedula', header: 'Cedula' },
+        { field: 'nombre', header: 'Nombre' },
+        {field: 'apellido', header:'APELLIDO'},
+        {field: 'mail', header:'MAIL'},
+        {field: 'telefono', header:'TELEFONO'},
+        {field: 'acceso', header:'ACCESO'},
+        {field: 'contra', header:'CONTRA'}
+    ];
+
+    const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
+
+
+
+    const exportPdf = () => {
+        import('jspdf').then(jsPDF => {
+            import('jspdf-autotable').then(() => {
+                const doc = new jsPDF.default(0, 0);
+                doc.autoTable(exportColumns, alimentos);
+                doc.save('Usuarios.pdf');
+            })
+        })
+    }
+
+
+    const exportExcel = () => {
+        import('xlsx').then(xlsx => {
+            const worksheet = xlsx.utils.json_to_sheet(alimentos);
+            const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+            const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
+            saveAsExcelFile(excelBuffer, 'Usuarios');
+        });
+    }
+
+    const saveAsExcelFile = (buffer, fileName) => {
+        import('file-saver').then(module => {
+            if (module && module.default) {
+                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+                let EXCEL_EXTENSION = '.xlsx';
+                const data = new Blob([buffer], {
+                    type: EXCEL_TYPE
+                });
+
+                module.default.saveAs(data, fileName + EXCEL_EXTENSION);
+            }
+        });
+    }
+
+
 
 
     return (
@@ -219,8 +277,7 @@ export default function GestionAlimentos() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="p-toolbar p-component mb-4" left={leftToolbarTemplate} ></Toolbar>
-                <DataTable value={alimentos} responsiveLayout="scroll" selection={selectedAlimentos} onSelectionChange={(e) => setSelectedAlimentos(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>                <DataTable value={alimentos} responsiveLayout="scroll" selection={selectedAlimentos} onSelectionChange={(e) => setSelectedAlimentos(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} alimentos" filters={filters1} globalFilterFields={['nombre', 'stock', 'comentario', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     
