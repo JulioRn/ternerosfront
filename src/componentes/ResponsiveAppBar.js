@@ -11,9 +11,14 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import { useNavigate } from 'react-router-dom';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+import './Principal.css';
+
+
+
+
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -34,6 +39,8 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
+  const navigate = useNavigate();
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -44,7 +51,7 @@ const ResponsiveAppBar = () => {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            LOGO
+            <img id='log' alt="Card" src='https://i.ibb.co/G5BZX5x/menuBar.png' onClick={() => navigate('/MenuPrincipal')} />
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -76,11 +83,18 @@ const ResponsiveAppBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              
+               
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Button onClick={() => navigate('/GestionU')}>Usuarios</Button>
+              <Button onClick={() => navigate('/GestionT')}>Terneros</Button>
+              <Button onClick={() => navigate('/GestionG')}>Guacheras</Button>
+              <Button onClick={() => navigate('/GestionE')}>Enfermedades</Button>
+              <Button onClick={() => navigate('/GestionA')}>Alimentos</Button>
+              <Button onClick={() => navigate('/GestionA')}>Gráficas</Button>
+              
                 </MenuItem>
-              ))}
+             
             </Menu>
           </Box>
           <Typography
@@ -89,18 +103,17 @@ const ResponsiveAppBar = () => {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
           >
-            LOGO
+            <img id='log' alt="Card" src='https://i.ibb.co/hMLvQgp/mbMovil.png' onClick={() => navigate('/MenuPrincipal')}/>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            
+              <Button onClick={() => navigate('/GestionU')}sx={{ my: 2, color: 'white', display: 'block' }}>Usuarios</Button>
+              <Button onClick={() => navigate('/GestionT')}sx={{ my: 2, color: 'white', display: 'block' }}>Terneros</Button>
+              <Button onClick={() => navigate('/GestionG')}sx={{ my: 2, color: 'white', display: 'block' }}>Guacheras</Button>
+              <Button onClick={() => navigate('/GestionE')}sx={{ my: 2, color: 'white', display: 'block' }}>Enfermedades</Button>
+              <Button onClick={() => navigate('/GestionA')}sx={{ my: 2, color: 'white', display: 'block' }}>Alimentos</Button>
+              <Button onClick={() => navigate('/GestionA')}sx={{ my: 2, color: 'white', display: 'block' }}>Gráficas</Button>
+
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -125,11 +138,13 @@ const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              
+                <MenuItem  onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center" onClick={() => navigate('/GestionT')}>Perfil</Typography>
+                  <Typography textAlign="center">Cuenta</Typography>
+                  <Typography textAlign="center" onClick={() => navigate('/MenuPrincipal')}>Principal</Typography>
+                  <Typography textAlign="center">Cerrar Sesión</Typography>
                 </MenuItem>
-              ))}
             </Menu>
           </Box>
         </Toolbar>

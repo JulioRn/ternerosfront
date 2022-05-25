@@ -24,50 +24,39 @@ import ResponsiveAppBar from './ResponsiveAppBar';
 
 
 
-export default function GestionUsuarios() {
+export default function GestionAlimentos() {
 
     
 
     const navigate = useNavigate();
     const toast = useRef(null);
 
-    const [selectedUsuarios, setSelectedUsuarios] = useState(null);
+    const [selectedAlimentos, setSelectedAlimentos] = useState(null);
 
-    const [usuarioDialog, setUsuarioDialog] = useState(false);
+    const [alimentoDialog, setAlimentoDialog] = useState(false);
 
-    const [usuarios, setUsuarios] = useState([]);
+    const [alimentos, setAlimentos] = useState([]);
     useEffect(() => {
-        UsuariosGet();
+        AlimentosGet();
         initFilters1();
     }, [])
 
 
-    const UsuarioGuardar = () => {
+    const AlimentoGuardar = () => {
         setSubmitted(true);
-
-
 
         var data = {
             'id': null,
             'nombre': nombre,
-            'apellido': apellido,
-            'cedula': cedula,
-            'mail': mail,
-            'telefono': telefono,
-            'contra': contra,
-            'acceso': acceso,
+            'stock': stock,
+            'comentario': comentario
         }
-        let _usuarios = [...usuarios];
-        let _usuario = { ...data };
+        let _alimentos = [...alimentos];
+        let _alimento = { ...data };
 
         if (nombre === '') {
-            console.log("errorrrr");
-            console.log(data);
-            console.log(nombre)
         } else {
-            console.log("nose")
-            console.log(nombre)
-            fetch("http://54.83.111.43:8080/usuario/agregar", {
+            fetch("http://54.83.111.43:8080/alimento/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -88,21 +77,17 @@ export default function GestionUsuarios() {
 
                 )
 
-                _usuarios.push(_usuario);
-                setUsuarios(_usuarios);     
-        setUsuarioDialog(false);
+                _alimentos.push(_alimento);
+                setAlimentos(_alimentos);     
+        setAlimentoDialog(false);
 
         }
 
     }
 
     const [nombre, setNombre] = useState('')
-    const [apellido, setApellido] = useState('')
-    const [cedula, setCedula] = useState('')
-    const [mail, setMail] = useState('')
-    const [telefono, setTelefono] = useState('')
-    const [acceso, setAcceso] = useState('')
-    const [contra, setContra] = useState('')
+    const [stock, setStock] = useState('')
+    const [comentario, setComentario] = useState('')
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
@@ -112,12 +97,8 @@ export default function GestionUsuarios() {
         setFilters1({
             'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
             'nombre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'apellido': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'acceso': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'contra': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'mail': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'telefono': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-            'cedula': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            'stock': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'comentario': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         });
         setGlobalFilterValue1('');
     }
@@ -131,33 +112,33 @@ export default function GestionUsuarios() {
         setGlobalFilterValue1(value);
     }
 
-    const UsuariosGet = () => {
-        fetch("http://54.83.111.43:8080/usuario/getAll")
+    const AlimentosGet = () => {
+        fetch("http://54.83.111.43:8080/alimento/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
-                    setUsuarios(result)
+                    setAlimentos(result)
                 }
             )
     }
 
-    const UsuarioDelete = () => {
-        fetch("http://54.83.111.43:8080/usuario/eliminar/" + selectedUsuarios.id_usuario)
+    const AlimentoDelete = () => {
+        fetch("http://54.83.111.43:8080/alimento/eliminar/" + selectedAlimentos.id)
             .then(
-                toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Usuario Eliminado', life: 3000 })
+                toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Alimento Eliminado', life: 3000 })
 
 
             );
-        let _usuarios = usuarios.filter(val => val.id_usuario !== selectedUsuarios.id_usuario);
-        setUsuarios(_usuarios);
-        setDeleteUsuarioDialog(false);
+        let _alimentos = alimentos.filter(val => val.id !== selectedAlimentos.id);
+        setAlimentos(_alimentos);
+        setDeleteAlimentoDialog(false);
     }
 
 
 
     const openNew = () => {
         setSubmitted(false);
-        setUsuarioDialog(true);
+        setAlimentoDialog(true);
     }
 
     const leftToolbarTemplate = () => {
@@ -165,11 +146,8 @@ export default function GestionUsuarios() {
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
                 <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
-               
+                
             </React.Fragment>
-
-
-
         )
     }
 
@@ -182,8 +160,6 @@ export default function GestionUsuarios() {
         )
     }
 
-    
-
     const regresarToolbar = () => {
         return (
             <React.Fragment>
@@ -194,7 +170,7 @@ export default function GestionUsuarios() {
 
     const header = (
         <div className="table-header">
-            <h5 className="mx-0 my-1">Gestionar Usuarios</h5>
+            <h5 className="mx-0 my-1">Gestionar Alimentos</h5>
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Buscar..." />
@@ -204,13 +180,13 @@ export default function GestionUsuarios() {
 
     const hideDialog = () => {
         setSubmitted(false);
-        setUsuarioDialog(false);
+        setAlimentoDialog(false);
     }
 
-    const usuarioDialogFooter = (
+    const alimentoDialogFooter = (
         <React.Fragment>
             <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={UsuarioGuardar} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={AlimentoGuardar} />
         </React.Fragment>
     );
 
@@ -218,25 +194,25 @@ export default function GestionUsuarios() {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteUsuario(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteAlimento(rowData)} />
             </React.Fragment>
         );
     }
 
-    const [deleteUsuarioDialog, setDeleteUsuarioDialog] = useState(false);
+    const [deleteAlimentoDialog, setDeleteAlimentoDialog] = useState(false);
 
-    const hideDeleteUsuarioDialog = () => {
-        setDeleteUsuarioDialog(false);
+    const hideDeleteAlimentoDialog = () => {
+        setDeleteAlimentoDialog(false);
     }
 
-    const confirmDeleteUsuario = () => {
-        setDeleteUsuarioDialog(true);
+    const confirmDeleteAlimento = () => {
+        setDeleteAlimentoDialog(true);
     }
 
-    const deleteUsuarioDialogFooter = (
+    const deleteAlimentoDialogFooter = (
         <React.Fragment>
-            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteUsuarioDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={UsuarioDelete} />
+            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteAlimentoDialog} />
+            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={AlimentoDelete} />
         </React.Fragment>
     );
 
@@ -259,7 +235,7 @@ export default function GestionUsuarios() {
         import('jspdf').then(jsPDF => {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default(0, 0);
-                doc.autoTable(exportColumns, usuarios);
+                doc.autoTable(exportColumns, alimentos);
                 doc.save('Usuarios.pdf');
             })
         })
@@ -268,7 +244,7 @@ export default function GestionUsuarios() {
 
     const exportExcel = () => {
         import('xlsx').then(xlsx => {
-            const worksheet = xlsx.utils.json_to_sheet(usuarios);
+            const worksheet = xlsx.utils.json_to_sheet(alimentos);
             const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
             const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
             saveAsExcelFile(excelBuffer, 'Usuarios');
@@ -301,23 +277,20 @@ export default function GestionUsuarios() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-                <DataTable value={usuarios} reflow="true" selection={selectedUsuarios} onSelectionChange={(e) => setSelectedUsuarios(e.value)} dataKey="id_usuario" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} usuarios" filters={filters1} globalFilterFields={['nombre', 'apellido', 'cedula', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
+            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>                <DataTable value={alimentos} responsiveLayout="scroll" selection={selectedAlimentos} onSelectionChange={(e) => setSelectedAlimentos(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} alimentos" filters={filters1} globalFilterFields={['nombre', 'stock', 'comentario', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
-                    <Column field="cedula" header="CEDULA" r></Column>
+                    
                     <Column field="nombre" header="NOMBRE"></Column>
-                    <Column field="apellido" header="APELLIDO"></Column>
-                    <Column field="mail" header="MAIL"></Column>
-                    <Column field="telefono" header="TELEFONO"></Column>
-                    <Column field="acceso" header="ACCESO"></Column>
-                    <Column field="contra" header="CONTRA"></Column>
-                    <Column body={actionBodyTemplate} exportable={false} ></Column>
+                    <Column field="stock" header="STOCK"></Column>
+                    <Column field="comentario" header="COMENTARIO"></Column>
+
+                    <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
                 <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
             </div>
 
-            <Dialog visible={usuarioDialog} style={{ width: '450px' }} header="Datos Usuario" modal className="p-fluid" footer={usuarioDialogFooter} onHide={hideDialog}>
+            <Dialog visible={alimentoDialog} style={{ width: '450px' }} header="Datos Alimento" modal className="p-fluid" footer={alimentoDialogFooter} onHide={hideDialog}>
 
                 <div className="field">
                     <label htmlFor="name">Nombre</label>
@@ -325,42 +298,23 @@ export default function GestionUsuarios() {
                     {submitted && !nombre && <small className="p-error">Ingresar nombre</small>}
                 </div>
                 <div className="field">
-                    <label htmlFor="apellido">Apellido</label>
-                    <InputText id="apellido" onChange={(e) => setApellido(e.target.value)} required className={classNames({ 'p-invalid': submitted && !apellido })} />
-                    {submitted && !apellido && <small className="p-error">Ingresar apellido</small>}
+                    <label htmlFor="stock">Stock</label>
+                    <InputText id="stock" onChange={(e) => setStock(e.target.value)} required className={classNames({ 'p-invalid': submitted && !stock })} />
+                    {submitted && !stock && <small className="p-error">Ingresar stock</small>}
                 </div>
                 <div className="field">
-                    <label htmlFor="cedula">Cedula</label>
-                    <InputText id="cedula" onChange={(e) => setCedula(e.target.value)} required className={classNames({ 'p-invalid': submitted && !cedula })} />
-                    {submitted && !cedula && <small className="p-error">Ingresar Cedula</small>}
+                    <label htmlFor="comentario">Comentario</label>
+                    <InputText id="comentario" onChange={(e) => setComentario(e.target.value)} required className={classNames({ 'p-invalid': submitted && !comentario })} />
+                    {submitted && !comentario && <small className="p-error">Ingresar Comentario</small>}
                 </div>
-                <div className="field">
-                    <label htmlFor="mail">Mail</label>
-                    <InputText id="mail" onChange={(e) => setMail(e.target.value)} required className={classNames({ 'p-invalid': submitted && !mail })} />
-                    {submitted && !mail && <small className="p-error">Ingresar Mail</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="tel">Telefono</label>
-                    <InputText id="tel" onChange={(e) => setTelefono(e.target.value)} required className={classNames({ 'p-invalid': submitted && !telefono })} />
-                    {submitted && !telefono && <small className="p-error">Ingresar Telefono</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="acceso">Acceso</label>
-                    <InputText id="acceso" onChange={(e) => setAcceso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !acceso })} />
-                    {submitted && !acceso && <small className="p-error">Ingresar Acceso</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="contra">Contraseña</label>
-                    <InputText id="contra" onChange={(e) => setContra(e.target.value)} required className={classNames({ 'p-invalid': submitted && !contra })} />
-                    {submitted && !contra && <small className="p-error">Ingresar Contraseña</small>}
-                </div>
+                
 
             </Dialog>
 
-            <Dialog visible={deleteUsuarioDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteUsuarioDialogFooter} onHide={hideDeleteUsuarioDialog}>
+            <Dialog visible={deleteAlimentoDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteAlimentoDialogFooter} onHide={hideDeleteAlimentoDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {selectedUsuarios && <span>Seguro desea eliminar el usuario CI: <b>{selectedUsuarios.cedula}</b> ?</span>}
+                    {selectedAlimentos && <span>Seguro desea eliminar el alimento CI: <b>{selectedAlimentos.comentario}</b> ?</span>}
                 </div>
             </Dialog>
 

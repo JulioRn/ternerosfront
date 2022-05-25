@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Button } from 'primereact/button';
 import { useNavigate } from 'react-router-dom';
+import ResponsiveAppBar from './ResponsiveAppBar';
+
 
 import './Principal.css';
 
@@ -13,10 +15,10 @@ export default function MenuPrincipal() {
 
 
 <div className="surface-0">
-    
-
-    <div className="text-900 font-bold text-6xl mb-4 text-center">CRECE TERNEROS</div>
-    <div className="text-700 text-xl mb-6 text-center line-height-3" style={{ color: 'darkolivegreen' }}>Monitoreo para la crianza de terneros</div>
+<ResponsiveAppBar />
+<br />
+    <div className="text-700 font-bold text-4xl mb-4 text-center">Monitoreo para la crianza de terneros</div>
+    <br />
     <div className="grid">
         <div className="col-12 lg:col-4">
             <div className="p-3 h-full">
@@ -27,7 +29,7 @@ export default function MenuPrincipal() {
                         <span className="ml-2 font-medium text-600">Descripción</span>
                     </div>
                     <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                    <img alt="logo" src="https://i.ibb.co/YW8XYLs/usuarios.jpg" className="mr-2"></img>
+                    <img alt="logo" src="https://i.ibb.co/YW8XYLs/terneros.jpg" className="mr-2"></img>
                     <hr className="mb-3 mx-0 border-top-1 border-bottom-none border-300 mt-auto" />
                     <Button label="Gestionar Usuarios" className="p-button p-component p-button-raised p-button-success mt-auto" onClick={() => navigate('/GestionU')} />
                 </div>
@@ -45,7 +47,7 @@ export default function MenuPrincipal() {
                     <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
                     <img alt="logo" src="https://i.ibb.co/kD00MBT/terneros.jpg" className="mr-2"></img>
                     <hr className="mb-3 mx-0 border-top-1 border-bottom-none border-300" />
-                    <Button label="Gestionar Terneros" className="p-button p-component p-button-raised p-button-success" />
+                    <Button label="Gestionar Terneros" className="p-button p-component p-button-raised p-button-success" onClick={() => navigate('/GestionT')} />
                 </div>
             </div>
         </div>
@@ -62,7 +64,7 @@ export default function MenuPrincipal() {
                     <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
                     <img alt="logo" src="https://i.ibb.co/p0pkVMt/guachera.jpg" className="mr-2"></img>
                     <hr className="mb-3 mx-0 border-top-1 border-bottom-none border-300" />
-                    <Button label="Gestionar Guacheras" className="p-button p-component p-button-raised p-button-success" />
+                    <Button label="Gestionar Guacheras" className="p-button p-component p-button-raised p-button-success" onClick={() => navigate('/GestionG')}/>
                 </div>
             </div>
         </div>
@@ -80,7 +82,7 @@ export default function MenuPrincipal() {
                     <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
                     <img alt="logo" src="https://i.ibb.co/nnKKnzW/enfermedades.jpg" className="mr-2"></img>
                     <hr className="mb-3 mx-0 border-top-1 border-bottom-none border-300 mt-auto" />
-                    <Button label="Gestionar Enfermedades" className="p-button p-component p-button-raised p-button-success mt-auto" />
+                    <Button label="Gestionar Enfermedades" className="p-button p-component p-button-raised p-button-success mt-auto" onClick={() => navigate('/GestionE')}/>
                 </div>
             </div>
         </div>
@@ -96,7 +98,7 @@ export default function MenuPrincipal() {
                     <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
                     <img alt="logo" src="https://i.ibb.co/Yb5Dn1B/alimento.jpg" className="mr-2"></img>
                     <hr className="mb-3 mx-0 border-top-1 border-bottom-none border-300" />
-                    <Button label="Gestionar Alimentos" className="p-button p-component p-button-raised p-button-success" />
+                    <Button label="Gestionar Alimentos" className="p-button p-component p-button-raised p-button-success" onClick={() => navigate('/GestionA')}/>
                 </div>
             </div>
         </div>

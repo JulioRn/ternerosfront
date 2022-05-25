@@ -24,50 +24,48 @@ import ResponsiveAppBar from './ResponsiveAppBar';
 
 
 
-export default function GestionUsuarios() {
+export default function GestionGuacheras() {
 
     
 
     const navigate = useNavigate();
     const toast = useRef(null);
 
-    const [selectedUsuarios, setSelectedUsuarios] = useState(null);
+    const [selectedGuacheras, setSelectedGuacheras] = useState(null);
 
-    const [usuarioDialog, setUsuarioDialog] = useState(false);
+    const [productDialog, setGuacheraDialog] = useState(false);
 
-    const [usuarios, setUsuarios] = useState([]);
+    const [guacheras, setGuacheras] = useState([]);
     useEffect(() => {
-        UsuariosGet();
+        GuacherasGet();
         initFilters1();
     }, [])
 
 
-    const UsuarioGuardar = () => {
+    const GuacheraGuardar = () => {
         setSubmitted(true);
 
 
 
         var data = {
-            'id': null,
-            'nombre': nombre,
-            'apellido': apellido,
-            'cedula': cedula,
-            'mail': mail,
-            'telefono': telefono,
-            'contra': contra,
-            'acceso': acceso,
+            'idGuachera': null,
+            'tipoGuachera': tipoGuachera,
+            'desc': desc,
+            'gastoAlimento': gastoAlimento,
+            'gastoMedicamento': gastoMedicamento,
+            'cantTerneros': cantTerneros,
         }
-        let _usuarios = [...usuarios];
-        let _usuario = { ...data };
+        let _guacheras = [...guacheras];
+        let _guachera = { ...data };
 
-        if (nombre === '') {
+        if (tipoGuachera === '') {
             console.log("errorrrr");
             console.log(data);
-            console.log(nombre)
+            console.log(tipoGuachera)
         } else {
             console.log("nose")
-            console.log(nombre)
-            fetch("http://54.83.111.43:8080/usuario/agregar", {
+            console.log(tipoGuachera)
+            fetch("http://54.83.111.43:8080/guachera/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -88,21 +86,19 @@ export default function GestionUsuarios() {
 
                 )
 
-                _usuarios.push(_usuario);
-                setUsuarios(_usuarios);     
-        setUsuarioDialog(false);
+                _guacheras.push(_guachera);
+                setGuacheras(_guacheras);     
+        setGuacheraDialog(false);
 
         }
 
     }
 
-    const [nombre, setNombre] = useState('')
-    const [apellido, setApellido] = useState('')
-    const [cedula, setCedula] = useState('')
-    const [mail, setMail] = useState('')
-    const [telefono, setTelefono] = useState('')
-    const [acceso, setAcceso] = useState('')
-    const [contra, setContra] = useState('')
+    const [tipoGuachera, setTipoGuachera] = useState('')
+    const [desc, setDesc] = useState('')
+    const [gastoAlimento, setGastoAlimento] = useState('')
+    const [gastoMedicamento, setGastoMedicamento] = useState('')
+    const [cantTerneros, setCantTerneros] = useState('')
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
@@ -111,13 +107,13 @@ export default function GestionUsuarios() {
     const initFilters1 = () => {
         setFilters1({
             'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
-            'nombre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'apellido': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'tipoGuachera': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'desc': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'acceso': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'contra': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'mail': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'telefono': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-            'cedula': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            'gastoMedicamento': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'cantTerneros': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            'gastoAlimento': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         });
         setGlobalFilterValue1('');
     }
@@ -131,33 +127,33 @@ export default function GestionUsuarios() {
         setGlobalFilterValue1(value);
     }
 
-    const UsuariosGet = () => {
-        fetch("http://54.83.111.43:8080/usuario/getAll")
+    const GuacherasGet = () => {
+        fetch("http://54.83.111.43:8080/guachera/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
-                    setUsuarios(result)
+                    setGuacheras(result)
                 }
             )
     }
 
-    const UsuarioDelete = () => {
-        fetch("http://54.83.111.43:8080/usuario/eliminar/" + selectedUsuarios.id_usuario)
+    const GuacheraDelete = () => {
+        fetch("http://54.83.111.43:8080/guachera/eliminar/" + selectedGuacheras.idGuachera)
             .then(
-                toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Usuario Eliminado', life: 3000 })
+                toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Guachera Eliminado', life: 3000 })
 
 
             );
-        let _usuarios = usuarios.filter(val => val.id_usuario !== selectedUsuarios.id_usuario);
-        setUsuarios(_usuarios);
-        setDeleteUsuarioDialog(false);
+        let _guacheras = guacheras.filter(val => val.idGuachera !== selectedGuacheras.idGuachera);
+        setGuacheras(_guacheras);
+        setDeleteGuacheraDialog(false);
     }
 
 
 
     const openNew = () => {
         setSubmitted(false);
-        setUsuarioDialog(true);
+        setGuacheraDialog(true);
     }
 
     const leftToolbarTemplate = () => {
@@ -165,11 +161,8 @@ export default function GestionUsuarios() {
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
                 <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
-               
+                
             </React.Fragment>
-
-
-
         )
     }
 
@@ -182,8 +175,6 @@ export default function GestionUsuarios() {
         )
     }
 
-    
-
     const regresarToolbar = () => {
         return (
             <React.Fragment>
@@ -194,7 +185,7 @@ export default function GestionUsuarios() {
 
     const header = (
         <div className="table-header">
-            <h5 className="mx-0 my-1">Gestionar Usuarios</h5>
+            <h5 className="mx-0 my-1">Gestionar Guacheras</h5>
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Buscar..." />
@@ -204,13 +195,13 @@ export default function GestionUsuarios() {
 
     const hideDialog = () => {
         setSubmitted(false);
-        setUsuarioDialog(false);
+        setGuacheraDialog(false);
     }
 
-    const usuarioDialogFooter = (
+    const guacheraDialogFooter = (
         <React.Fragment>
             <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={UsuarioGuardar} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={GuacheraGuardar} />
         </React.Fragment>
     );
 
@@ -218,25 +209,25 @@ export default function GestionUsuarios() {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteUsuario(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteGuachera(rowData)} />
             </React.Fragment>
         );
     }
 
-    const [deleteUsuarioDialog, setDeleteUsuarioDialog] = useState(false);
+    const [deleteGuacheraDialog, setDeleteGuacheraDialog] = useState(false);
 
-    const hideDeleteUsuarioDialog = () => {
-        setDeleteUsuarioDialog(false);
+    const hideDeleteGuacheraDialog = () => {
+        setDeleteGuacheraDialog(false);
     }
 
-    const confirmDeleteUsuario = () => {
-        setDeleteUsuarioDialog(true);
+    const confirmDeleteGuachera = () => {
+        setDeleteGuacheraDialog(true);
     }
 
-    const deleteUsuarioDialogFooter = (
+    const deleteGuacheraDialogFooter = (
         <React.Fragment>
-            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteUsuarioDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={UsuarioDelete} />
+            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteGuacheraDialog} />
+            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={GuacheraDelete} />
         </React.Fragment>
     );
 
@@ -259,7 +250,7 @@ export default function GestionUsuarios() {
         import('jspdf').then(jsPDF => {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default(0, 0);
-                doc.autoTable(exportColumns, usuarios);
+                doc.autoTable(exportColumns, guacheras);
                 doc.save('Usuarios.pdf');
             })
         })
@@ -268,7 +259,7 @@ export default function GestionUsuarios() {
 
     const exportExcel = () => {
         import('xlsx').then(xlsx => {
-            const worksheet = xlsx.utils.json_to_sheet(usuarios);
+            const worksheet = xlsx.utils.json_to_sheet(guacheras);
             const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
             const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
             saveAsExcelFile(excelBuffer, 'Usuarios');
@@ -302,65 +293,53 @@ export default function GestionUsuarios() {
             <Toast ref={toast} />
             <div className="card">
             <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-                <DataTable value={usuarios} reflow="true" selection={selectedUsuarios} onSelectionChange={(e) => setSelectedUsuarios(e.value)} dataKey="id_usuario" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} usuarios" filters={filters1} globalFilterFields={['nombre', 'apellido', 'cedula', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
+                            <DataTable value={guacheras} responsiveLayout="scroll" selection={selectedGuacheras} onSelectionChange={(e) => setSelectedGuacheras(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} guacheras" filters={filters1} globalFilterFields={['tipoGuachera', 'desc', 'gastoAlimento', 'contra', 'acceso', 'gastoMedicamento', 'cantTerneros']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
-                    <Column field="cedula" header="CEDULA" r></Column>
-                    <Column field="nombre" header="NOMBRE"></Column>
-                    <Column field="apellido" header="APELLIDO"></Column>
-                    <Column field="mail" header="MAIL"></Column>
-                    <Column field="telefono" header="TELEFONO"></Column>
-                    <Column field="acceso" header="ACCESO"></Column>
-                    <Column field="contra" header="CONTRA"></Column>
-                    <Column body={actionBodyTemplate} exportable={false} ></Column>
+                    <Column field="tipoGuachera" header="TIPO DE GUACHERA"></Column>
+                    <Column field="desc" header="DESCRIPCION"></Column>
+                    <Column field="gastoMedicamento" header="GASTOS MEDICAMENTO"></Column>
+                    <Column field="cantTerneros" header="CANTIDAD TERNEROS"></Column>
+                    <Column field="gastoAlimento" header="GASTOS ALIMENTOS" r></Column>
+                    <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
                 <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
             </div>
 
-            <Dialog visible={usuarioDialog} style={{ width: '450px' }} header="Datos Usuario" modal className="p-fluid" footer={usuarioDialogFooter} onHide={hideDialog}>
+            <Dialog visible={productDialog} style={{ width: '450px' }} header="Datos Guachera" modal className="p-fluid" footer={guacheraDialogFooter} onHide={hideDialog}>
 
                 <div className="field">
-                    <label htmlFor="name">Nombre</label>
-                    <InputText id="name" onChange={(e) => setNombre(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nombre })} />
-                    {submitted && !nombre && <small className="p-error">Ingresar nombre</small>}
+                    <label htmlFor="tipoGuachera">Tipo de Guachera</label>
+                    <InputText id="tipoGuachera" onChange={(e) => setTipoGuachera(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !tipoGuachera })} />
+                    {submitted && !tipoGuachera && <small className="p-error">Ingresar Tipo de Guachera</small>}
                 </div>
                 <div className="field">
-                    <label htmlFor="apellido">Apellido</label>
-                    <InputText id="apellido" onChange={(e) => setApellido(e.target.value)} required className={classNames({ 'p-invalid': submitted && !apellido })} />
-                    {submitted && !apellido && <small className="p-error">Ingresar apellido</small>}
+                    <label htmlFor="desc">Descripción</label>
+                    <InputText id="desc" onChange={(e) => setDesc(e.target.value)} required className={classNames({ 'p-invalid': submitted && !desc })} />
+                    {submitted && !desc && <small className="p-error">Ingresar Descripción</small>}
                 </div>
                 <div className="field">
-                    <label htmlFor="cedula">Cedula</label>
-                    <InputText id="cedula" onChange={(e) => setCedula(e.target.value)} required className={classNames({ 'p-invalid': submitted && !cedula })} />
-                    {submitted && !cedula && <small className="p-error">Ingresar Cedula</small>}
+                    <label htmlFor="gastoAlimento">Gastos de Alimentos</label>
+                    <InputText id="gastoAlimento" onChange={(e) => setGastoAlimento(e.target.value)} required className={classNames({ 'p-invalid': submitted && !gastoAlimento })} />
+                    {submitted && !gastoAlimento && <small className="p-error">Ingresar Gastos de Alimentos</small>}
                 </div>
                 <div className="field">
-                    <label htmlFor="mail">Mail</label>
-                    <InputText id="mail" onChange={(e) => setMail(e.target.value)} required className={classNames({ 'p-invalid': submitted && !mail })} />
-                    {submitted && !mail && <small className="p-error">Ingresar Mail</small>}
+                    <label htmlFor="gastoMedicamento">Gastos de Medicamentos</label>
+                    <InputText id="gastoMedicamento" onChange={(e) => setGastoMedicamento(e.target.value)} required className={classNames({ 'p-invalid': submitted && !gastoMedicamento })} />
+                    {submitted && !gastoMedicamento && <small className="p-error">Ingresar Gastos de Medicamentos</small>}
                 </div>
                 <div className="field">
-                    <label htmlFor="tel">Telefono</label>
-                    <InputText id="tel" onChange={(e) => setTelefono(e.target.value)} required className={classNames({ 'p-invalid': submitted && !telefono })} />
-                    {submitted && !telefono && <small className="p-error">Ingresar Telefono</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="acceso">Acceso</label>
-                    <InputText id="acceso" onChange={(e) => setAcceso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !acceso })} />
-                    {submitted && !acceso && <small className="p-error">Ingresar Acceso</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="contra">Contraseña</label>
-                    <InputText id="contra" onChange={(e) => setContra(e.target.value)} required className={classNames({ 'p-invalid': submitted && !contra })} />
-                    {submitted && !contra && <small className="p-error">Ingresar Contraseña</small>}
+                    <label htmlFor="cantTerneros">Cantidad de Terneros</label>
+                    <InputText id="cantTerneros" onChange={(e) => setCantTerneros(e.target.value)} required className={classNames({ 'p-invalid': submitted && !cantTerneros })} />
+                    {submitted && !cantTerneros && <small className="p-error">Ingresar Cantidad de Terneros</small>}
                 </div>
 
             </Dialog>
 
-            <Dialog visible={deleteUsuarioDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteUsuarioDialogFooter} onHide={hideDeleteUsuarioDialog}>
+            <Dialog visible={deleteGuacheraDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteGuacheraDialogFooter} onHide={hideDeleteGuacheraDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {selectedUsuarios && <span>Seguro desea eliminar el usuario CI: <b>{selectedUsuarios.cedula}</b> ?</span>}
+                    {selectedGuacheras && <span>Seguro desea eliminar la guachera: <b>{selectedGuacheras.idGuachera}</b> ?</span>}
                 </div>
             </Dialog>
 
