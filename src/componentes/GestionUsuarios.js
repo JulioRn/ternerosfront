@@ -48,7 +48,7 @@ export default function GestionUsuarios() {
 
 
         var data = {
-            'id': null,
+            'id_usuario': null,
             'nombre': nombre,
             'apellido': apellido,
             'cedula': cedula,
@@ -57,6 +57,7 @@ export default function GestionUsuarios() {
             'contra': contra,
             'acceso': acceso,
         }
+
         let _usuarios = [...usuarios];
         let _usuario = { ...data };
 
@@ -67,7 +68,7 @@ export default function GestionUsuarios() {
         } else {
             console.log("nose")
             console.log(nombre)
-            fetch("http://54.83.111.43:8080/usuario/agregar", {
+            fetch("http://localhost:8080/usuario/agregar/", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -87,6 +88,11 @@ export default function GestionUsuarios() {
                     }
 
                 )
+
+                .then(result =>{
+                    console.log(result);
+                 })
+                .catch(e => console.log(e))
 
                 _usuarios.push(_usuario);
                 setUsuarios(_usuarios);     
@@ -132,7 +138,7 @@ export default function GestionUsuarios() {
     }
 
     const UsuariosGet = () => {
-        fetch("http://54.83.111.43:8080/usuario/getAll")
+        fetch("http://localhost:8080/usuario/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -142,7 +148,7 @@ export default function GestionUsuarios() {
     }
 
     const UsuarioDelete = () => {
-        fetch("http://54.83.111.43:8080/usuario/eliminar/" + selectedUsuarios.id_usuario)
+        fetch("http://localhost:8080/usuario/eliminar/" + selectedUsuarios.id_usuario)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Usuario Eliminado', life: 3000 })
 
@@ -244,11 +250,11 @@ export default function GestionUsuarios() {
     const cols = [
         { field: 'cedula', header: 'Cedula' },
         { field: 'nombre', header: 'Nombre' },
-        {field: 'apellido', header:'APELLIDO'},
-        {field: 'mail', header:'MAIL'},
-        {field: 'telefono', header:'TELEFONO'},
-        {field: 'acceso', header:'ACCESO'},
-        {field: 'contra', header:'CONTRA'}
+        {field: 'apellido', header:'Apellido'},
+        {field: 'mail', header:'Mail'},
+        {field: 'telefono', header:'Telefono'},
+        {field: 'acceso', header:'Acceso'},
+        {field: 'contra', header:'Contra'}
     ];
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));

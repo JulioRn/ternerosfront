@@ -48,7 +48,7 @@ export default function GestionGuacheras() {
 
 
         var data = {
-            'idGuachera': null,
+            'id_Guachera': null,
             'tipoGuachera': tipoGuachera,
             'desc': desc,
             'gastoAlimento': gastoAlimento,
@@ -65,7 +65,7 @@ export default function GestionGuacheras() {
         } else {
             console.log("nose")
             console.log(tipoGuachera)
-            fetch("http://54.83.111.43:8080/guachera/agregar", {
+            fetch("http://localhost:8080/guachera/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -128,7 +128,7 @@ export default function GestionGuacheras() {
     }
 
     const GuacherasGet = () => {
-        fetch("http://54.83.111.43:8080/guachera/getAll")
+        fetch("http://localhost:8080/guachera/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -138,13 +138,13 @@ export default function GestionGuacheras() {
     }
 
     const GuacheraDelete = () => {
-        fetch("http://54.83.111.43:8080/guachera/eliminar/" + selectedGuacheras.idGuachera)
+        fetch("http://localhost:8080/guachera/eliminar/" + selectedGuacheras.id_Guachera)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Guachera Eliminado', life: 3000 })
 
 
             );
-        let _guacheras = guacheras.filter(val => val.idGuachera !== selectedGuacheras.idGuachera);
+        let _guacheras = guacheras.filter(val => val.id_Guachera !== selectedGuacheras.id_Guachera);
         setGuacheras(_guacheras);
         setDeleteGuacheraDialog(false);
     }
@@ -339,7 +339,7 @@ export default function GestionGuacheras() {
             <Dialog visible={deleteGuacheraDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteGuacheraDialogFooter} onHide={hideDeleteGuacheraDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {selectedGuacheras && <span>Seguro desea eliminar la guachera: <b>{selectedGuacheras.idGuachera}</b> ?</span>}
+                    {selectedGuacheras && <span>Seguro desea eliminar la guachera: <b>{selectedGuacheras.id_Guachera}</b> ?</span>}
                 </div>
             </Dialog>
 

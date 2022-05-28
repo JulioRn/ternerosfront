@@ -18,7 +18,6 @@ import { useNavigate } from "react-router-dom";
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
 import ResponsiveAppBar from './ResponsiveAppBar';
-import { Calendar } from 'primereact/calendar';
 
 
 
@@ -51,28 +50,15 @@ export default function GestionEnfermedades() {
         var data = {
             'id_enfermedad': null,
             'nombre': nombre,
-            'fechaIn': fechaIn,
-            'temRec': temRec,
-            'deshidratacion': deshidratacion,
-            'diarrea': diarrea,
-            'descNasal': descNasal,
-            'descOcular': descOcular,
-            'frecResp': frecResp,
-            'otros': otros,
-            'tratamiento': tratamiento,
-            'fechaFin': fechaFin,
-            'fechaMuerte': fechaMuerte,
             'observaciones': observaciones,
-            'medicamento': medicamento,
-            'tos': tos,
         }
         let _enfermedades = [...enfermedades];
         let _enfermedad = { ...data };
 
-        if (fechaIn === '') {
+        if (nombre === '') {
             console.log("Error");
         } else {
-            fetch("http://54.83.111.43:8080/enfermedad/agregar", {
+            fetch("http://localhost:8080/enfermedad/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -102,20 +88,7 @@ export default function GestionEnfermedades() {
     }
 
     const [nombre, setNombre] = useState('')
-    const [fechaIn, setFechaIn] = useState('')
-    const [temRec, settemRec] = useState('')
-    const [deshidratacion, setDeshidratacion] = useState('')
-    const [diarrea, setDiarrea] = useState('')
-    const [descNasal, setDescNasal] = useState('')
-    const [tos, setTos] = useState('')
-    const [descOcular, setDescOcular] = useState('')
-    const [frecResp, setFrecuenciaRes] = useState('')
-    const [otros, setOtros] = useState('')
-    const [tratamiento, setTratamiento] = useState('')
-    const [fechaFin, setFechaFin] = useState('')
-    const [fechaMuerte, setFechaMuerte] = useState('')
     const [observaciones, setObservaciones] = useState('')
-    const [medicamento, setMedicamento] = useState('')
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
@@ -137,7 +110,6 @@ export default function GestionEnfermedades() {
             'fechaFin': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'fechaMuerte': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'observaciones': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'medicamento': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
 
         });
         setGlobalFilterValue1('');
@@ -153,7 +125,7 @@ export default function GestionEnfermedades() {
     }
 
     const EnfermedadesGet = () => {
-        fetch("http://54.83.111.43:8080/enfermedad/getAll")
+        fetch("http://localhost:8080/enfermedad/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -163,7 +135,7 @@ export default function GestionEnfermedades() {
     }
 
     const EnfermedadDelete = () => {
-        fetch("http://54.83.111.43:8080/enfermedad/eliminar/" + selectedEnfermedades.id_enfermedad)
+        fetch("http://localhost:8080/enfermedad/eliminar/" + selectedEnfermedades.id_enfermedad)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Enfermedad Eliminado', life: 3000 })
 
@@ -258,13 +230,9 @@ export default function GestionEnfermedades() {
 
 
     const cols = [
-        { field: 'cedula', header: 'Cedula' },
-        { field: 'nombre', header: 'Nombre' },
-        {field: 'apellido', header:'APELLIDO'},
-        {field: 'mail', header:'MAIL'},
-        {field: 'telefono', header:'TELEFONO'},
-        {field: 'acceso', header:'ACCESO'},
-        {field: 'contra', header:'CONTRA'}
+        { field: 'id_enfermedad', header: 'ID ENFERMEDAD' },
+        { field: 'nombre', header: 'NOMBRE' },
+        {field: 'observaciones', header:'OBSERAVCIONES'},
     ];
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
@@ -322,15 +290,7 @@ export default function GestionEnfermedades() {
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} enfermedades" filters={filters1} globalFilterFields={['fechaIn', 'temRec', 'deshidratacion', 'descOcular', 'tos', 'diarrea', 'descNasal']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="nombre" header="NOMBRE"></Column>
-                    <Column field="deshidratacion" header="DESHIDRATACION"></Column>
-                    <Column field="fechaIn" header="FECHA INICIO"></Column>
-                    <Column field="temRec" header="TEMPERATURA RECTAL"></Column>
-                    <Column field="diarrea" header="DIARREA"></Column>
-                    <Column field="descNasal" header="DESCARGA NASAL"></Column>
-                    <Column field="tos" header="TOS"></Column>
-                    <Column field="descOcular" header="DESCARGA OCULAR"></Column>
-                    <Column field="frecResp" header="FRECUENCIA RESPIRATORIA"></Column>
-                    <Column field="otros" header="OTROS"></Column>
+                    <Column field="observaciones" header="OBSERVACION"></Column>
                    
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
@@ -343,79 +303,15 @@ export default function GestionEnfermedades() {
             <div className="field">
                     <label htmlFor="nombre">Nombre</label>
                     <InputText id="nombre" onChange={(e) => setNombre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nombre })} />
-                    {submitted && !temRec && <small className="p-error">Ingresar Nombre</small>}
+                    {submitted && !nombre && <small className="p-error">Ingresar Nombre</small>}
                 </div>
 
-            <div className="field">
-                    <label htmlFor="fechaIn">Fecha Inicio</label>
-                    <Calendar id="fechaIn" onChange={(e) => setFechaIn(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !setFechaIn })}></Calendar>
-                    {submitted && !fechaFin && <small className="p-error">Ingresar Fecha Inicio</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="temRec">Temperatura Rectal</label>
-                    <InputText id="temRec" onChange={(e) => settemRec(e.target.value)} required className={classNames({ 'p-invalid': submitted && !temRec })} />
-                    {submitted && !temRec && <small className="p-error">Ingresar Temperatura Rectal</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="deshidratacion">Deshidratacion</label>
-                    <InputText id="deshidratacion" onChange={(e) => setDeshidratacion(e.target.value)} required className={classNames({ 'p-invalid': submitted && !deshidratacion })} />
-                    {submitted && !deshidratacion && <small className="p-error">Ingresar Deshidratacion</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="diarrea">Diarrea</label>
-                    <InputText id="diarrea" onChange={(e) => setDiarrea(e.target.value)} required className={classNames({ 'p-invalid': submitted && !diarrea })} />
-                    {submitted && !diarrea && <small className="p-error">Ingresar Diarrea</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="descNasal">Descarga Nasal</label>
-                    <InputText id="descNasal" onChange={(e) => setDescNasal(e.target.value)} required className={classNames({ 'p-invalid': submitted && !descNasal })} />
-                    {submitted && !descNasal && <small className="p-error">Ingresar Descarga Nasal</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="tos">Tos</label>
-                    <InputText id="tos" onChange={(e) => setTos(e.target.value)} required className={classNames({ 'p-invalid': submitted && !tos })} />
-                    {submitted && !tos && <small className="p-error">Ingresar Tos</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="descOcular">Descarga Ocular</label>
-                    <InputText id="descOcular" onChange={(e) => setDescOcular(e.target.value)} required className={classNames({ 'p-invalid': submitted && !descOcular })} />
-                    {submitted && !descOcular && <small className="p-error">Ingresar Descarga Ocular</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="frecResp">Frecuencia Respiratoria</label>
-                    <InputText id="frecResp" onChange={(e) => setFrecuenciaRes(e.target.value)} required className={classNames({ 'p-invalid': submitted && !tos })} />
-                    {submitted && !frecResp && <small className="p-error">Ingresar Frecuencia Respiratoria</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="otros">Otros</label>
-                    <InputText id="otros" onChange={(e) => setOtros(e.target.value)} required className={classNames({ 'p-invalid': submitted && !tos })} />
-                    {submitted && !otros && <small className="p-error">Ingresar Otros</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="tratamiento">Tratamiento</label>
-                    <InputText id="tratamiento" onChange={(e) => setTratamiento(e.target.value)} required className={classNames({ 'p-invalid': submitted && !tos })} />
-                    {submitted && !tratamiento && <small className="p-error">Ingresar Tratamiento</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="fechaFin">Fecha Fin</label>
-                    <Calendar id="fechaFin" onChange={(e) => setFechaFin(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !fechaFin })}></Calendar>
-                    {submitted && !fechaFin && <small className="p-error">Ingresar Fecha Fin</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="fechaMuerte">Fecha Muerte</label>
-                    <Calendar id="fechaMuerte" onChange={(e) => setFechaMuerte(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !fechaMuerte })}></Calendar>
-                    {submitted && !fechaMuerte && <small className="p-error">Ingresar Fecha de Muerte</small>}
-                </div>
                 <div className="field">
                     <label htmlFor="observaciones">Observacion</label>
-                    <InputText id="observaciones" onChange={(e) => setObservaciones(e.target.value)} required className={classNames({ 'p-invalid': submitted && !tos })} />
+                    <InputText id="observaciones" onChange={(e) => setObservaciones(e.target.value)} required className={classNames({ 'p-invalid': submitted && !observaciones })} />
                     {submitted && !observaciones && <small className="p-error">Ingresar Observacion</small>}
                 </div>
-                <div className="field">
-                    <label htmlFor="medicamento">Medicamento</label>
-                    <InputText id="medicamento" onChange={(e) => setMedicamento(e.target.value)} required className={classNames({ 'p-invalid': submitted && !tos })} />
-                    {submitted && !medicamento && <small className="p-error">Ingresar Medicamento</small>}
-                </div>
+                
 
             </Dialog>
 

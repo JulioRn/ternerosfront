@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
 import ResponsiveAppBar from './ResponsiveAppBar';
+import { MultiSelect } from 'primereact/multiselect';
 
 
 
@@ -33,13 +34,18 @@ export default function GestionTerneros() {
     const navigate = useNavigate();
     const toast = useRef(null);
 
+    const [selectedEnfermedad, setSelectedEnfermedad] = useState(null);
+
     const [selectedTerneros, setSelectedTerneros] = useState(null);
 
     const [terneroDialog, setTerneroDialog] = useState(false);
 
     const [terneros, setTerneros] = useState([]);
+    const [enfermedades, setEnfermedades] = useState([]);
+
     useEffect(() => {
         TernerosGet();
+        EnfermedadesGet();
         initFilters1();
     }, [])
 
@@ -47,7 +53,7 @@ export default function GestionTerneros() {
     const TerneroGuardar = () => {
         setSubmitted(true);
 
-
+        const JsonArray = JSON.stringify(selectedEnfermedad);
 
         var data = {
             'id': null,
@@ -62,6 +68,7 @@ export default function GestionTerneros() {
             'valor': valor,
             'altura': altura,
             'tiempo': tiempo,
+            'id_enfermedad': selectedEnfermedad,
         }
         var data2 = {
             'id': null,
@@ -76,6 +83,7 @@ export default function GestionTerneros() {
             'valor': valor,
             'altura': altura,
             'tiempo': tiempo,
+            'id_enfermedad': selectedEnfermedad,
         }
         let _terneros = [...terneros];
         let _ternero = { ...data2 };
@@ -83,7 +91,7 @@ export default function GestionTerneros() {
         if (nroTernero === '') {
             console.log("Error");
         } else {
-            fetch("http://54.83.111.43:8080/ternero/agregar", {
+            fetch("http://localhost:8080/ternero/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -108,7 +116,7 @@ export default function GestionTerneros() {
             _terneros.push(_ternero);
             setTerneros(_terneros);
             setTerneroDialog(false);
-            console.log(fechaNac);
+            console.log(data);
 
         }
 
@@ -158,7 +166,7 @@ export default function GestionTerneros() {
     }
 
     const TernerosGet = () => {
-        fetch("http://54.83.111.43:8080/ternero/getAll")
+        fetch("http://localhost:8080/ternero/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -167,8 +175,18 @@ export default function GestionTerneros() {
             )
     }
 
+    const EnfermedadesGet = () => {
+        fetch("http://localhost:8080/enfermedad/getAll")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setEnfermedades(result)
+                }
+            )
+    }
+
     const TerneroDelete = () => {
-        fetch("http://54.83.111.43:8080/ternero/eliminar/" + selectedTerneros.id)
+        fetch("http://localhost:8080/ternero/eliminar/" + selectedTerneros.id)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Ternero Eliminado', life: 3000 })
 
@@ -424,6 +442,12 @@ export default function GestionTerneros() {
                     <label htmlFor="altura">Altura</label>
                     <InputText id="altura" onChange={(e) => setAltura(e.target.value)} required className={classNames({ 'p-invalid': submitted && !peso })} />
                     {submitted && !altura && <small className="p-error">Ingresar Altura</small>}
+                </div>
+
+                <div className="field">
+                    <label htmlFor="altura">Enfermedad</label>
+                <MultiSelect value={selectedEnfermedad} options={enfermedades} onChange={(e) => setSelectedEnfermedad(e.value)} optionLabel="nombre" placeholder="Seleccionar Enfermedad" maxSelectedLabels={3} />
+                    {submitted && !selectedEnfermedad && <small className="p-error">Ingresar Altura</small>}
                 </div>
 
 

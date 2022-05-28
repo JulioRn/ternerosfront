@@ -56,7 +56,7 @@ export default function GestionAlimentos() {
 
         if (nombre === '') {
         } else {
-            fetch("http://54.83.111.43:8080/alimento/agregar", {
+            fetch("http://localhost:8080/alimento/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -113,7 +113,7 @@ export default function GestionAlimentos() {
     }
 
     const AlimentosGet = () => {
-        fetch("http://54.83.111.43:8080/alimento/getAll")
+        fetch("http://localhost:8080/alimento/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -123,13 +123,13 @@ export default function GestionAlimentos() {
     }
 
     const AlimentoDelete = () => {
-        fetch("http://54.83.111.43:8080/alimento/eliminar/" + selectedAlimentos.id)
+        fetch("http://localhost:8080/alimento/eliminar/" + selectedAlimentos.id_alimento)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Alimento Eliminado', life: 3000 })
 
 
             );
-        let _alimentos = alimentos.filter(val => val.id !== selectedAlimentos.id);
+        let _alimentos = alimentos.filter(val => val.id_alimento !== selectedAlimentos.id_alimento);
         setAlimentos(_alimentos);
         setDeleteAlimentoDialog(false);
     }
@@ -277,7 +277,7 @@ export default function GestionAlimentos() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>                <DataTable value={alimentos} responsiveLayout="scroll" selection={selectedAlimentos} onSelectionChange={(e) => setSelectedAlimentos(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>                <DataTable value={alimentos} responsiveLayout="scroll" selection={selectedAlimentos} onSelectionChange={(e) => setSelectedAlimentos(e.value)} dataKey="id_alimento" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} alimentos" filters={filters1} globalFilterFields={['nombre', 'stock', 'comentario', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     

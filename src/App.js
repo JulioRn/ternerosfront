@@ -10,6 +10,7 @@ import GestionEnfermedades from './componentes/GestionEnfermedades'
 import GestionAlimentos from './componentes/GestionAlimentos'
 import GestionGuacheras from './componentes/GestionGuacheras'
 import GestionTerneros from './componentes/GestionTerneros'
+import Graficas from './componentes/Graficas'
 
 
 
@@ -29,6 +30,11 @@ function App() {
 
           <Route path='/MenuPrincipal' element={<MenuPrincipal />}></Route>
         </Routes>
+
+        <Routes >
+
+<Route path='/Graficas' element={<Graficas />}></Route>
+</Routes>
 
         <Routes>
           <Route path='/GestionU' element={<GestionUsuarios />}></Route>
