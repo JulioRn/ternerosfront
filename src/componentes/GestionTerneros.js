@@ -39,6 +39,7 @@ export default function GestionTerneros() {
     const [selectedTerneros, setSelectedTerneros] = useState(null);
 
     const [terneroDialog, setTerneroDialog] = useState(false);
+    const [partoDialog, setPartoDialog] = useState(false);
 
     const [terneros, setTerneros] = useState([]);
     const [enfermedades, setEnfermedades] = useState([]);
@@ -53,8 +54,6 @@ export default function GestionTerneros() {
     const TerneroGuardar = () => {
         setSubmitted(true);
 
-        const JsonArray = JSON.stringify(selectedEnfermedad);
-
         var data = {
             'id': null,
             'nroTernero': nroTernero,
@@ -68,7 +67,7 @@ export default function GestionTerneros() {
             'valor': valor,
             'altura': altura,
             'tiempo': tiempo,
-            'id_enfermedad': selectedEnfermedad,
+            'enfermedad': selectedEnfermedad[0],
         }
         var data2 = {
             'id': null,
@@ -83,7 +82,7 @@ export default function GestionTerneros() {
             'valor': valor,
             'altura': altura,
             'tiempo': tiempo,
-            'id_enfermedad': selectedEnfermedad,
+            'enfermedad': selectedEnfermedad[0],
         }
         let _terneros = [...terneros];
         let _ternero = { ...data2 };
@@ -117,6 +116,7 @@ export default function GestionTerneros() {
             setTerneros(_terneros);
             setTerneroDialog(false);
             console.log(data);
+            
 
         }
 
@@ -201,13 +201,25 @@ export default function GestionTerneros() {
 
     const openNew = () => {
         setSubmitted(false);
+        setRegistrarPDialog(false);
         setTerneroDialog(true);
+    }
+
+    const openDialogParto = () => {
+        setSubmitted(false);
+        setRegistrarPDialog(true);
+    }
+
+    const openNewParto = () => {
+        setSubmitted(false);
+        setRegistrarPDialog(false);
+        setPartoDialog(true);
     }
 
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
+                <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openDialogParto} />
                 <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
 
             </React.Fragment>
@@ -244,9 +256,18 @@ export default function GestionTerneros() {
     const hideDialog = () => {
         setSubmitted(false);
         setTerneroDialog(false);
+        setPartoDialog(false);
+        setRegistrarPDialog(false);
     }
 
     const terneroDialogFooter = (
+        <React.Fragment>
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={TerneroGuardar} />
+        </React.Fragment>
+    );
+
+    const partoDialogFooter = (
         <React.Fragment>
             <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={TerneroGuardar} />
@@ -263,6 +284,7 @@ export default function GestionTerneros() {
     }
 
     const [deleteTerneroDialog, setDeleteTerneroDialog] = useState(false);
+    const [registrarPDialog, setRegistrarPDialog] = useState(false);
 
     const hideDeleteTerneroDialog = () => {
         setDeleteTerneroDialog(false);
@@ -276,6 +298,13 @@ export default function GestionTerneros() {
         <React.Fragment>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteTerneroDialog} />
             <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={TerneroDelete} />
+        </React.Fragment>
+    );
+
+    const registarPDialogFooter = (
+        <React.Fragment>
+            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={openNew} />
+            <Button label="Sí" icon="pi pi-check" className="p-button-text" onClick={openNewParto} />
         </React.Fragment>
     );
 
@@ -446,21 +475,32 @@ export default function GestionTerneros() {
 
                 <div className="field">
                     <label htmlFor="altura">Enfermedad</label>
-                <MultiSelect value={selectedEnfermedad} options={enfermedades} onChange={(e) => setSelectedEnfermedad(e.value)} optionLabel="nombre" placeholder="Seleccionar Enfermedad" maxSelectedLabels={3} />
-                    {submitted && !selectedEnfermedad && <small className="p-error">Ingresar Altura</small>}
+                <MultiSelect value= {selectedEnfermedad}   options={enfermedades} onChange={(e) => setSelectedEnfermedad(e.value)} optionLabel="nombre" placeholder="Seleccionar Enfermedad" maxSelectedLabels={3} />
+                   
                 </div>
 
 
+            </Dialog>
 
-
-
-
+            <Dialog visible={partoDialog} style={{ width: '450px' }} header="Datos Parto" modal className="p-fluid" footer={partoDialogFooter} onHide={hideDialog}>
+                                <div className="field">
+                    <label htmlFor="nroTernero">Nro Parto</label>
+                    <InputText id="nroTernero" onChange={(e) => setNroTernero(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nroTernero })} />
+                    {submitted && !nroTernero && <small className="p-error">Ingresar Nro Ternero</small>}
+                </div>
             </Dialog>
 
             <Dialog visible={deleteTerneroDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteTerneroDialogFooter} onHide={hideDeleteTerneroDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                     {selectedTerneros && <span>Seguro desea eliminar el ternero: <b>{selectedTerneros.nroTernero}</b> ?</span>}
+                </div>
+            </Dialog>
+
+            <Dialog visible={registrarPDialog} style={{ width: '450px' }} header="Registrar Parto" modal footer={registarPDialogFooter} onHide={hideDialog}>
+                <div className="confirmation-content">
+                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                    {<span>Es necesario registrar Parto para este nuevo Ternero</span>}
                 </div>
             </Dialog>
 
