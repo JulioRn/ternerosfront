@@ -91,7 +91,7 @@ const ResponsiveAppBar = () => {
               <Button onClick={() => navigate('/GestionG')}>Guacheras</Button>
               <Button onClick={() => navigate('/GestionE')}>Enfermedades</Button>
               <Button onClick={() => navigate('/GestionA')}>Alimentos</Button>
-              <Button onClick={() => navigate('/GestionA')}>Gráficas</Button>
+              <Button onClick={() => navigate('/Graficas')}>Analíticas</Button>
               
                 </MenuItem>
              
@@ -112,7 +112,7 @@ const ResponsiveAppBar = () => {
               <Button onClick={() => navigate('/GestionG')}sx={{ my: 2, color: 'white', display: 'block' }}>Guacheras</Button>
               <Button onClick={() => navigate('/GestionE')}sx={{ my: 2, color: 'white', display: 'block' }}>Enfermedades</Button>
               <Button onClick={() => navigate('/GestionA')}sx={{ my: 2, color: 'white', display: 'block' }}>Alimentos</Button>
-              <Button onClick={() => navigate('/GestionA')}sx={{ my: 2, color: 'white', display: 'block' }}>Gráficas</Button>
+              <Button onClick={() => navigate('/Graficas')}sx={{ my: 2, color: 'white', display: 'block' }}>Analíticas</Button>
 
           </Box>
 
