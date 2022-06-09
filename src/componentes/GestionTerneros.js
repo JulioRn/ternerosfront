@@ -69,6 +69,7 @@ export default function GestionTerneros() {
             'fechaDes': fechaDesC,
             'pesoDes': pesoDes,
             'altura': altura,
+            'parto': parto,
             'enfermedad': selectedEnfermedad[0],
         }
         var data2 = {
@@ -79,6 +80,7 @@ export default function GestionTerneros() {
             'fechaDes': fechaDesC,
             'pesoDes': pesoDes,
             'altura': altura,
+            'parto': parto,
             'enfermedad': selectedEnfermedad[0],
         }
         let _terneros = [...terneros];
@@ -168,11 +170,17 @@ export default function GestionTerneros() {
             _partos.push(_parto);
             setPartos(_partos);
             setPartoDialog(false);
-            setTerneroDialog(true);
-            setParto(partos);
+            setParto(_partos);
             console.log(data);
 
-
+            PartosGet();
+            const getLastArrItem = (partos) => { 
+              let lastItem=partos[partos.length-1];  
+              console.log(`Last element is ${lastItem.id_parto}`); 
+            }  
+            getLastArrItem(partos); 
+            
+            setTerneroDialog(true);
         }
 
     }
@@ -236,6 +244,16 @@ export default function GestionTerneros() {
             .then(
                 (result) => {
                     setEnfermedades(result)
+                }
+            )
+    }
+
+    const PartosGet = () => {
+        fetch("http://localhost:8080/parto/getAll")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setPartos(result)
                 }
             )
     }
@@ -414,7 +432,6 @@ export default function GestionTerneros() {
 
 
 
-
     return (
 
 
@@ -472,7 +489,7 @@ export default function GestionTerneros() {
 
                 <div className="field">
                     <label htmlFor="fechaDes">Fecha Desleche</label>
-                    <Calendar id="fechaDes" onChange={(e) => setFechaDes(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !fechaDes })}></Calendar>
+                    <Calendar id="fechaDes" dateFormat="dd/mm/yy" onChange={(e) => setFechaDes(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !fechaDes })}></Calendar>
                     {submitted && !fechaDes && <small className="p-error">Ingresar Fecha</small>}
                 </div>
 
