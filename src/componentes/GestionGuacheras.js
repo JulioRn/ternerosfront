@@ -80,7 +80,8 @@ export default function GestionGuacheras() {
                     (result) => {
                         alert(result['message'])
                         if (result['status'] === 'ok') {
-                            
+                            toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Guachera registrada', life: 3000 })
+
                         }
                     }
 
@@ -169,8 +170,9 @@ export default function GestionGuacheras() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                 <Button type="button" icon="pi pi-file-pdf" label="PDF" onClick={exportPdf} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
-                <Button type="button" icon="pi pi-file-excel" label="EXCEL" onClick={exportExcel} className="p-button-success mr-2" data-pr-tooltip="PDF" />
+                 
+                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
+                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
             </React.Fragment>
         )
     }
@@ -209,7 +211,7 @@ export default function GestionGuacheras() {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteGuachera(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" selection={selectedGuacheras} onSelectionChange={(e) => setSelectedGuacheras(e.value)} onClick={() => confirmDeleteGuachera(rowData)} />
             </React.Fragment>
         );
     }

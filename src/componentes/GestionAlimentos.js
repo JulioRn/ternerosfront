@@ -71,7 +71,8 @@ export default function GestionAlimentos() {
                     (result) => {
                         alert(result['message'])
                         if (result['status'] === 'ok') {
-                            
+                            toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Alimento registrado', life: 3000 })
+
                         }
                     }
 
@@ -154,8 +155,9 @@ export default function GestionAlimentos() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                 <Button type="button" icon="pi pi-file-pdf" label="PDF" onClick={exportPdf} className="p-button-warning mr-2" data-pr-tooltip="PDF" />
-                <Button type="button" icon="pi pi-file-excel" label="EXCEL" onClick={exportExcel} className="p-button-success mr-2" data-pr-tooltip="PDF" />
+                 
+                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
+                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
             </React.Fragment>
         )
     }
