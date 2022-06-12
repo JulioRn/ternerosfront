@@ -106,7 +106,7 @@ export default function MenuPrincipal() {
         <div className="col-12 lg:col-4">
             <div className="p-3 h-full">
                 <div className="shadow-2 p-3 flex flex-column" style={{ borderRadius: '6px' }}>
-                    <div className="text-900 font-medium text-xl mb-2">GRAFICAS</div>
+                    <div className="text-900 font-medium text-xl mb-2">ANALITICAS</div>
                     <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
                     <div className="flex align-items-center">
                         
