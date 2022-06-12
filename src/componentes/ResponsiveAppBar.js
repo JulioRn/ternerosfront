@@ -42,7 +42,7 @@ const ResponsiveAppBar = () => {
   const navigate = useNavigate();
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{backgroundColor: 'darkolivegreen'}} >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -85,7 +85,7 @@ const ResponsiveAppBar = () => {
             >
               
                
-                <MenuItem onClick={handleCloseNavMenu}>
+                <MenuItem onClick={handleCloseNavMenu} style={{display: 'grid'}}>
                   <Button onClick={() => navigate('/GestionU')}>Usuarios</Button>
               <Button onClick={() => navigate('/GestionT')}>Terneros</Button>
               <Button onClick={() => navigate('/GestionG')}>Guacheras</Button>
@@ -105,7 +105,7 @@ const ResponsiveAppBar = () => {
           >
             <img id='log' alt="Card" src='https://i.ibb.co/hMLvQgp/mbMovil.png' onClick={() => navigate('/MenuPrincipal')}/>
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} >
             
               <Button onClick={() => navigate('/GestionU')}sx={{ my: 2, color: 'white', display: 'block' }}>Usuarios</Button>
               <Button onClick={() => navigate('/GestionT')}sx={{ my: 2, color: 'white', display: 'block' }}>Terneros</Button>
@@ -139,7 +139,7 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               
-                <MenuItem  onClick={handleCloseUserMenu}>
+                <MenuItem  onClick={handleCloseUserMenu} style={{display: 'grid'}}>
                   <Typography textAlign="center" onClick={() => navigate('/GestionT')}>Perfil</Typography>
                   <Typography textAlign="center">Cuenta</Typography>
                   <Typography textAlign="center" onClick={() => navigate('/MenuPrincipal')}>Principal</Typography>

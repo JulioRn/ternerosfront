@@ -19,6 +19,8 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
 import ResponsiveAppBar from './ResponsiveAppBar';
 
+import { Dropdown } from 'primereact/dropdown';
+
 
 
 
@@ -49,8 +51,9 @@ export default function GestionGuacheras() {
 
         var data = {
             'id_Guachera': null,
+            'nroGuachera': nroGuachera,
             'tipoGuachera': tipoGuachera,
-            'desc': desc,
+            'descripcion': descripcion,
             'gastoAlimento': gastoAlimento,
             'gastoMedicamento': gastoMedicamento,
             'cantTerneros': cantTerneros,
@@ -95,8 +98,9 @@ export default function GestionGuacheras() {
 
     }
 
+    const [nroGuachera, setNroGuachera] = useState('')
     const [tipoGuachera, setTipoGuachera] = useState('')
-    const [desc, setDesc] = useState('')
+    const [descripcion, setDescripcion] = useState('')
     const [gastoAlimento, setGastoAlimento] = useState('')
     const [gastoMedicamento, setGastoMedicamento] = useState('')
     const [cantTerneros, setCantTerneros] = useState('')
@@ -105,13 +109,17 @@ export default function GestionGuacheras() {
     const [submitted, setSubmitted] = useState(false);
 
 
+    const tipos = [
+        {label: 'Individual', value: 'Individual'},
+    {label: 'Colectiva', value: 'Colectiva'},
+       ];
+
+
     const initFilters1 = () => {
         setFilters1({
             'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
             'tipoGuachera': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'desc': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'acceso': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'contra': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'descripcion': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'gastoMedicamento': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'cantTerneros': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
             'gastoAlimento': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
@@ -139,13 +147,13 @@ export default function GestionGuacheras() {
     }
 
     const GuacheraDelete = () => {
-        fetch("http://localhost:8080/guachera/eliminar/" + selectedGuacheras.id_Guachera)
+        fetch("http://localhost:8080/guachera/eliminar/" + selectedGuacheras.id_guachera)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Guachera Eliminado', life: 3000 })
 
 
             );
-        let _guacheras = guacheras.filter(val => val.id_Guachera !== selectedGuacheras.id_Guachera);
+        let _guacheras = guacheras.filter(val => val.id_guachera !== selectedGuacheras.id_guachera);
         setGuacheras(_guacheras);
         setDeleteGuacheraDialog(false);
     }
@@ -171,8 +179,8 @@ export default function GestionGuacheras() {
         return (
             <React.Fragment>
                  
-                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
-                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
+                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
+                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
             </React.Fragment>
         )
     }
@@ -296,10 +304,11 @@ export default function GestionGuacheras() {
             <div className="card">
             <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
                             <DataTable value={guacheras} responsiveLayout="scroll" selection={selectedGuacheras} onSelectionChange={(e) => setSelectedGuacheras(e.value)} dataKey="id_guachera" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} guacheras" filters={filters1} globalFilterFields={['tipoGuachera', 'desc', 'gastoAlimento', 'contra', 'acceso', 'gastoMedicamento', 'cantTerneros']} header={header} >
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} guacheras" filters={filters1} globalFilterFields={['tipoGuachera', 'descripcion', 'gastoAlimento', 'contra', 'acceso', 'gastoMedicamento', 'cantTerneros']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
+                    <Column field="nroGuachera" header="NRO DE GUACHERA"></Column>
                     <Column field="tipoGuachera" header="TIPO DE GUACHERA"></Column>
-                    <Column field="desc" header="DESCRIPCION"></Column>
+                    <Column field="descripcion" header="DESCRIPCION"></Column>
                     <Column field="gastoMedicamento" header="GASTOS MEDICAMENTO"></Column>
                     <Column field="cantTerneros" header="CANTIDAD TERNEROS"></Column>
                     <Column field="gastoAlimento" header="GASTOS ALIMENTOS" r></Column>
@@ -311,14 +320,20 @@ export default function GestionGuacheras() {
             <Dialog visible={productDialog} style={{ width: '450px' }} header="Datos Guachera" modal className="p-fluid" footer={guacheraDialogFooter} onHide={hideDialog}>
 
                 <div className="field">
-                    <label htmlFor="tipoGuachera">Tipo de Guachera</label>
-                    <InputText id="tipoGuachera" onChange={(e) => setTipoGuachera(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !tipoGuachera })} />
-                    {submitted && !tipoGuachera && <small className="p-error">Ingresar Tipo de Guachera</small>}
+                    <label htmlFor="nroGuachera">Nro Guachera</label>
+                    <InputText id="nroGuachera" onChange={(e) => setNroGuachera(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nroGuachera })} />
+                    {submitted && !nroGuachera && <small className="p-error">Ingresar Nro Guachera</small>}
                 </div>
+
                 <div className="field">
-                    <label htmlFor="desc">Descripción</label>
-                    <InputText id="desc" onChange={(e) => setDesc(e.target.value)} required className={classNames({ 'p-invalid': submitted && !desc })} />
-                    {submitted && !desc && <small className="p-error">Ingresar Descripción</small>}
+                    <label htmlFor="tipoGuachera">Tipo de Guachera</label>
+                    <Dropdown value={tipoGuachera} options={tipos} onChange={(e) => setTipoGuachera(e.value)} placeholder="Seleccionar tipo"/>                    {submitted && !tipoGuachera && <small className="p-error">Ingresar Tipo de Guachera</small>}
+                </div>
+
+                <div className="field">
+                    <label htmlFor="descripcion">Descripción</label>
+                    <InputText id="descripcion" onChange={(e) => setDescripcion(e.target.value)} required className={classNames({ 'p-invalid': submitted && !descripcion })} />
+                    {submitted && !descripcion && <small className="p-error">Ingresar Descripción</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="gastoAlimento">Gastos de Alimentos</label>

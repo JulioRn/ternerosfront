@@ -156,8 +156,8 @@ export default function GestionAlimentos() {
         return (
             <React.Fragment>
                  
-                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
-                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
+                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
+                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
             </React.Fragment>
         )
     }
