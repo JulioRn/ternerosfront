@@ -645,14 +645,17 @@ export default function GestionTerneros() {
 
 
     const cols = [
-        { field: 'cedula', header: 'Cedula' },
-        { field: 'nombre', header: 'Nombre' },
-        { field: 'apellido', header: 'APELLIDO' },
-        { field: 'mail', header: 'MAIL' },
-        { field: 'telefono', header: 'TELEFONO' },
-        { field: 'acceso', header: 'ACCESO' },
-        { field: 'contra', header: 'CONTRA' }
+        { field: 'nroTernero', header: 'NroTernero' },
+        { field: 'fechaNac', header: 'Fech. Nac.' },
+        { field: 'peso', header: 'Peso' },
+        { field: 'fechaDes', header: 'Fech. Des.' },
+        { field: 'pesoDes', header: 'Peso Des.' },
+        { field: 'altura', header: 'Altura' },
+        { field: 'enfermedad', header: 'Enfermedad' }
     ];
+  
+           
+
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
 
