@@ -26,7 +26,7 @@ import ResponsiveAppBar from './ResponsiveAppBar';
 
 export default function GestionUsuarios() {
 
-    
+
 
     const navigate = useNavigate();
     const toast = useRef(null);
@@ -77,29 +77,16 @@ export default function GestionUsuarios() {
                 body: JSON.stringify(data),
             }
 
-            )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        alert(result['message'])
-                        if (result['status'] === 'ok') {
-                            toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Usuario registrado', life: 3000 })
+            ).then(result => {
+                console.log(result);
+                toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Usuario registrado', life: 3000 })
 
-                        }
-                    }
-
-                )
-
-                .then(result =>{
-                    console.log(result);
-                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Usuario registrado', life: 3000 })
-
-                 })
+            })
                 .catch(e => console.log(e))
 
-                _usuarios.push(_usuario);
-                setUsuarios(_usuarios);     
-        setUsuarioDialog(false);
+            _usuarios.push(_usuario);
+            setUsuarios(_usuarios);
+            setUsuarioDialog(false);
 
         }
 
@@ -174,7 +161,7 @@ export default function GestionUsuarios() {
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
                 <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
-               
+
             </React.Fragment>
 
 
@@ -185,14 +172,14 @@ export default function GestionUsuarios() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                 
-                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
-                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
+
+                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport" src='https://i.ibb.co/9ybqLVM/pdf.png' /></Button>
+                <Button type="button" onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport" src='https://i.ibb.co/9hjyjYy/excel.png' /></Button>
             </React.Fragment>
         )
     }
 
-    
+
 
     const regresarToolbar = () => {
         return (
@@ -254,11 +241,11 @@ export default function GestionUsuarios() {
     const cols = [
         { field: 'cedula', header: 'Cedula' },
         { field: 'nombre', header: 'Nombre' },
-        {field: 'apellido', header:'Apellido'},
-        {field: 'mail', header:'Mail'},
-        {field: 'telefono', header:'Telefono'},
-        {field: 'acceso', header:'Acceso'},
-        {field: 'contra', header:'Contra'}
+        { field: 'apellido', header: 'Apellido' },
+        { field: 'mail', header: 'Mail' },
+        { field: 'telefono', header: 'Telefono' },
+        { field: 'acceso', header: 'Acceso' },
+        { field: 'contra', header: 'Contra' }
     ];
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
@@ -311,7 +298,7 @@ export default function GestionUsuarios() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
                 <DataTable value={usuarios} reflow="true" selection={selectedUsuarios} onSelectionChange={(e) => setSelectedUsuarios(e.value)} dataKey="id_usuario" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} usuarios" filters={filters1} globalFilterFields={['nombre', 'apellido', 'cedula', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>

@@ -68,17 +68,9 @@ export default function GestionEnfermedades() {
                 body: JSON.stringify(data),
             }
 
-            )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        alert(result['message'])
-                        if (result['status'] === 'ok') {
-                            toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Enfermedad registrada', life: 3000 })
-                        }
-                    }
-
-                )
+            ).then(
+                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Enfermedad registrada', life: 3000 })
+                    )
 
                 _enfermedades.push(_enfermedad);
                 setEnfermedades(_enfermedades);     
@@ -320,7 +312,7 @@ export default function GestionEnfermedades() {
             <Dialog visible={deleteEnfermedadDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteEnfermedadDialogFooter} onHide={hideDeleteEnfermedadDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {selectedEnfermedades && <span>Seguro desea eliminar el enfermedad CI: <b>{selectedEnfermedades.deshidratacion}</b> ?</span>}
+                    {selectedEnfermedades && <span>Seguro desea eliminar la enfermedad: <b>{selectedEnfermedades.nombre}</b> ?</span>}
                 </div>
             </Dialog>
 

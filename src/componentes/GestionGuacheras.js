@@ -77,18 +77,9 @@ export default function GestionGuacheras() {
                 body: JSON.stringify(data),
             }
 
-            )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        alert(result['message'])
-                        if (result['status'] === 'ok') {
-                            toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Guachera registrada', life: 3000 })
-
-                        }
-                    }
-
-                )
+            ).then(
+                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Guachera registrada', life: 3000 })
+                    )
 
                 _guacheras.push(_guachera);
                 setGuacheras(_guacheras);     

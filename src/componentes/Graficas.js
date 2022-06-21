@@ -85,7 +85,7 @@ const Graficas = () => {
                     setTerneros(result)
                 }
             )
-            
+
     }
 
     console.log(terneros)
@@ -186,6 +186,13 @@ const Graficas = () => {
         sum4 += (terneros[i].parto == null);
 
     }
+    let contador = 0;
+
+    for (let i = 0; i < ternerosF.length; i++) {
+
+        contador += (ternerosF[i].parto !== null)
+
+    }
 
 
     for (let i = 0; i < partos.length; i++) {
@@ -209,6 +216,8 @@ const Graficas = () => {
     let sumDiciembre = 0;
 
 
+
+
     for (let i = 0; i < terneros.length; i++) {
 
         sumEnero += (terneros[i].fechaNac.includes('/01/'))
@@ -227,34 +236,70 @@ const Graficas = () => {
 
     }
 
-    let sumEneroM = 0;
-    let sumFebreroM = 0;
-    let sumMarzoM = 0;
-    let sumAbrilM = 0;
-    let sumMayoM = 0;
-    let sumJunioM = 0;
-    let sumJulioM = 0;
-    let sumAgostoM = 0;
-    let sumSeptiembreM = 0;
-    let sumOctubreM = 0;
-    let sumNoviembreM = 0;
-    let sumDiciembreM = 0;
+    let sumEneroMM = 0;
+    let sumFebreroMM = 0;
+    let sumMarzoMM = 0;
+    let sumAbrilMM = 0;
+    let sumMayoMM = 0;
+    let sumJunioMM = 0;
+    let sumJulioMM = 0;
+    let sumAgostoMM = 0;
+    let sumSeptiembreMM = 0;
+    let sumOctubreMM = 0;
+    let sumNoviembreMM = 0;
+    let sumDiciembreMM = 0;
 
-    for (let i = 0; i < muertes.length; i++) {
+    let sumEneroMH = 0;
+    let sumFebreroMH = 0;
+    let sumMarzoMH = 0;
+    let sumAbrilMH = 0;
+    let sumMayoMH = 0;
+    let sumJunioMH = 0;
+    let sumJulioMH = 0;
+    let sumAgostoMH = 0;
+    let sumSeptiembreMH = 0;
+    let sumOctubreMH = 0;
+    let sumNoviembreMH = 0;
+    let sumDiciembreMH = 0;
 
-        sumEneroM += (muertes[i].fecha.includes('/01/'))
-        sumFebreroM += (muertes[i].fecha.includes('/02/'))
-        sumMarzoM += (muertes[i].fecha.includes('/03/'))
-        sumAbrilM += (muertes[i].fecha.includes('/04/'))
-        sumMayoM += (muertes[i].fecha.includes('/05/'))
-        sumJunioM += (muertes[i].fecha.includes('/06/'))
-        sumJulioM += (muertes[i].fecha.includes('/07/'))
-        sumAgostoM += (muertes[i].fecha.includes('/08/'))
-        sumSeptiembreM += (muertes[i].fecha.includes('/09/'))
-        sumOctubreM += (muertes[i].fecha.includes('/10/'))
-        sumNoviembreM += (muertes[i].fecha.includes('/11/'))
-        sumDiciembreM += (muertes[i].fecha.includes('/12/'))
+    for (let i = 0; i < terneros.length; i++) {
 
+        if (terneros[i].muerte !== null) {
+
+            if (terneros[i].sexo === 'Macho') {
+
+
+            sumEneroMM += (terneros[i].muerte.fecha.includes('/01/'))
+            sumFebreroMM += (terneros[i].muerte.fecha.includes('/02/'))
+            sumMarzoMM += (terneros[i].muerte.fecha.includes('/03/'))
+            sumAbrilMM += (terneros[i].muerte.fecha.includes('/04/'))
+            sumMayoMM += (terneros[i].muerte.fecha.includes('/05/'))
+            sumJunioMM += (terneros[i].muerte.fecha.includes('/06/'))
+            sumJulioMM += (terneros[i].muerte.fecha.includes('/07/'))
+            sumAgostoMM += (terneros[i].muerte.fecha.includes('/08/'))
+            sumSeptiembreMM += (terneros[i].muerte.fecha.includes('/09/'))
+            sumOctubreMM += (terneros[i].muerte.fecha.includes('/10/'))
+            sumNoviembreMM += (terneros[i].muerte.fecha.includes('/11/'))
+            sumDiciembreMM += (terneros[i].muerte.fecha.includes('/12/'))
+
+        } else if (terneros[i].sexo === 'Hembra') {
+
+
+            sumEneroMH += (terneros[i].muerte.fecha.includes('/01/'))
+            sumFebreroMH += (terneros[i].muerte.fecha.includes('/02/'))
+            sumMarzoMH += (terneros[i].muerte.fecha.includes('/03/'))
+            sumAbrilMH += (terneros[i].muerte.fecha.includes('/04/'))
+            sumMayoMH += (terneros[i].muerte.fecha.includes('/05/'))
+            sumJunioMH += (terneros[i].muerte.fecha.includes('/06/'))
+            sumJulioMH += (terneros[i].muerte.fecha.includes('/07/'))
+            sumAgostoMH += (terneros[i].muerte.fecha.includes('/08/'))
+            sumSeptiembreMH += (terneros[i].muerte.fecha.includes('/09/'))
+            sumOctubreMH += (terneros[i].muerte.fecha.includes('/10/'))
+            sumNoviembreMH += (terneros[i].muerte.fecha.includes('/11/'))
+            sumDiciembreMH += (terneros[i].muerte.fecha.includes('/12/'))
+
+        }
+    }
 
     }
 
@@ -271,25 +316,62 @@ const Graficas = () => {
     let sumPNoviembre = 0;
     let sumPDiciembre = 0;
 
+    let sumPEneroH = 0;
+    let sumPFebreroH = 0;
+    let sumPMarzoH = 0;
+    let sumPAbrilH = 0;
+    let sumPMayoH = 0;
+    let sumPJunioH = 0;
+    let sumPJulioH = 0;
+    let sumPAgostoH = 0;
+    let sumPSeptiembreH = 0;
+    let sumPOctubreH = 0;
+    let sumPNoviembreH = 0;
+    let sumPDiciembreH = 0;
+
     for (let i = 0; i < terneros.length; i++) {
 
-        sumPEnero += (terneros[i].fechaNac.includes('/01/') && terneros[i].parto != null)
-        sumPFebrero += (terneros[i].fechaNac.includes('/02/') && terneros[i].parto != null)
-        sumPMarzo += (terneros[i].fechaNac.includes('/03/') && terneros[i].parto != null)
-        sumPAbril += (terneros[i].fechaNac.includes('/04/') && terneros[i].parto != null)
-        sumPMayo += (terneros[i].fechaNac.includes('/05/') && terneros[i].parto != null)
-        sumPJunio += (terneros[i].fechaNac.includes('/06/') && terneros[i].parto != null)
-        sumPJulio += (terneros[i].fechaNac.includes('/07/') && terneros[i].parto != null)
-        sumPAgosto += (terneros[i].fechaNac.includes('/08/') && terneros[i].parto != null)
-        sumPSeptiembre += (terneros[i].fechaNac.includes('/09/') && terneros[i].parto != null)
-        sumPOctubre += (terneros[i].fechaNac.includes('/10/') && terneros[i].parto != null)
-        sumPNoviembre += (terneros[i].fechaNac.includes('/11/') && terneros[i].parto != null)
-        sumPDiciembre += (terneros[i].fechaNac.includes('/12/') && terneros[i].parto != null)
+        if (terneros[i].parto !== null) {
+
+            if (terneros[i].sexo === 'Macho') {
+
+                sumPEnero += (terneros[i].fechaNac.includes('/01/'))
+                sumPFebrero += (terneros[i].fechaNac.includes('/02/'))
+                sumPMarzo += (terneros[i].fechaNac.includes('/03/'))
+                sumPAbril += (terneros[i].fechaNac.includes('/04/'))
+                sumPMayo += (terneros[i].fechaNac.includes('/05/'))
+                sumPJunio += (terneros[i].fechaNac.includes('/06/'))
+                sumPJulio += (terneros[i].fechaNac.includes('/07/'))
+                sumPAgosto += (terneros[i].fechaNac.includes('/08/'))
+                sumPSeptiembre += (terneros[i].fechaNac.includes('/09/'))
+                sumPOctubre += (terneros[i].fechaNac.includes('/10/'))
+                sumPNoviembre += (terneros[i].fechaNac.includes('/11/'))
+                sumPDiciembre += (terneros[i].fechaNac.includes('/12/'))
+            } else if (terneros[i].sexo === 'Hembra') {
+
+                sumPEneroH += (terneros[i].fechaNac.includes('/01/'))
+                sumPFebreroH += (terneros[i].fechaNac.includes('/02/'))
+                sumPMarzoH += (terneros[i].fechaNac.includes('/03/'))
+                sumPAbrilH += (terneros[i].fechaNac.includes('/04/'))
+                sumPMayoH += (terneros[i].fechaNac.includes('/05/'))
+                sumPJunioH += (terneros[i].fechaNac.includes('/06/'))
+                sumPJulioH += (terneros[i].fechaNac.includes('/07/'))
+                sumPAgostoH += (terneros[i].fechaNac.includes('/08/'))
+                sumPSeptiembreH += (terneros[i].fechaNac.includes('/09/'))
+                sumPOctubreH += (terneros[i].fechaNac.includes('/10/'))
+                sumPNoviembreH += (terneros[i].fechaNac.includes('/11/'))
+                sumPDiciembreH += (terneros[i].fechaNac.includes('/12/'))
+
+            }
+
+        }
+
+
 
 
     }
 
-    
+
 
 
     const chartData = {
@@ -309,21 +391,26 @@ const Graficas = () => {
             }]
     };
 
-    const chartTernP = {
-        labels: ['Terneros con Parto', 'Terneros sin Parto'],
-
+    const partosSexos = {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         datasets: [
             {
-                data: [sum3, sum4],
-                backgroundColor: [
-                    "#e2e37e",
-                    "#bf9780",
-                ],
-                hoverBackgroundColor: [
-                    "#c8ca66",
-                    "#a68069",
-                ]
-            }]
+                label: 'Machos',
+                backgroundColor: 'red',
+                data: [sumPEnero, sumPFebrero, sumPMarzo, sumPAbril, sumPMayo, sumPJunio, sumPJulio, sumPAgosto, sumPSeptiembre, sumPOctubre, sumPNoviembre, sumPDiciembre],
+                tension: .4,
+                fill: false,
+
+            },
+            {
+                label: 'Hembras',
+                backgroundColor: 'green',
+                data: [sumPEneroH, sumPFebreroH, sumPMarzoH, sumPAbrilH, sumPMayoH, sumPJunioH, sumPJulioH, sumPAgostoH, sumPSeptiembreH, sumPOctubreH, sumPNoviembreH, sumPDiciembreH],
+                tension: .4,
+                fill: false,
+
+            }
+        ]
     };
 
     const chartPartoNA = {
@@ -355,14 +442,31 @@ const Graficas = () => {
         }
     });
 
+    const [basico] = useState({
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#495057'
+                }
+            }
+        }
+    });
 
-    const basicData = {
+    const refras = {
         labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         datasets: [
             {
-                label: 'Muertes por Mes',
+                label: 'Machos',
                 backgroundColor: 'red',
-                data: [sumEneroM, sumFebreroM, sumMarzoM, sumAbrilM, sumMayoM, sumJunioM, sumJulioM, sumAgostoM, sumSeptiembreM, sumOctubreM, sumNoviembreM, sumDiciembreM],
+                data: [sumEneroMM, sumFebreroMM, sumMarzoMM, sumAbrilMM, sumMayoMM, sumJunioMM, sumJulioMM, sumAgostoMM, sumSeptiembreMM, sumOctubreMM, sumNoviembreMM, sumDiciembreMM],
+                tension: .4,
+                fill: false,
+
+            },
+            {
+                label: 'Hembras',
+                backgroundColor: 'green',
+                data: [sumEneroMH, sumFebreroMH, sumMarzoMH, sumAbrilMH, sumMayoMH, sumJunioMH, sumJulioMH, sumAgostoMH, sumSeptiembreMM, sumOctubreMH, sumNoviembreMH, sumDiciembreMH],
                 tension: .4,
                 fill: false,
 
@@ -370,11 +474,36 @@ const Graficas = () => {
         ]
     };
 
+
+    const basicData = {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        datasets: [
+            {
+                label: 'Machos',
+                backgroundColor: 'red',
+                data: [sumEneroMM, sumFebreroMM, sumMarzoMM, sumAbrilMM, sumMayoMM, sumJunioMM, sumJulioMM, sumAgostoMM, sumSeptiembreMM, sumOctubreMM, sumNoviembreMM, sumDiciembreMM],
+                tension: .4,
+                fill: false,
+
+            },
+            {
+                label: 'Hembras',
+                backgroundColor: 'green',
+                data: [sumEneroMH, sumFebreroMH, sumMarzoMH, sumAbrilMH, sumMayoMH, sumJunioMH, sumJulioMH, sumAgostoMH, sumSeptiembreMM, sumOctubreMH, sumNoviembreMH, sumDiciembreMH],
+                tension: .4,
+                fill: false,
+
+            }
+        ]
+    };
+
+    
+
     const basicData2 = {
         labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         datasets: [
             {
-                label: 'Terneros Nacidos en Mes',
+                label: 'Terneros Registrados en Mes',
                 backgroundColor: '#E89309',
                 data: [sumEnero, sumFebrero, sumMarzo, sumAbril, sumMayo, sumJunio, sumJulio, sumAgosto, sumSeptiembre, sumOctubre, sumNoviembre, sumDiciembre]
             },
@@ -418,22 +547,53 @@ const Graficas = () => {
             }
         };
 
+        let horizontalOptions = {
+            indexAxis: 'y',
+            maintainAspectRatio: false,
+            aspectRatio: .8,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#495057'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#495057'
+                    },
+                    grid: {
+                        color: '#ebedef'
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: '#495057'
+                    },
+                    grid: {
+                        color: '#ebedef'
+                    }
+                }
+            }
+        };
+
         return {
-            basicOptions,
+            basicOptions, horizontalOptions
         }
     }
-    const { basicOptions } = getLightTheme();
+    const { basicOptions, horizontalOptions } = getLightTheme();
 
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <label htmlFor="startDate">Filtrar desde</label>
-                <Calendar id="startDate" label="Prueba" onChange={(e) => setStartDate(e.target.value)} showButtonBar dateFormat="dd/mm/yy" style={{marginLeft: '0.5em', marginRight: '0.5em'}}></Calendar>
+                <Calendar id="startDate" label="Prueba" onChange={(e) => setStartDate(e.target.value)} showButtonBar dateFormat="dd/mm/yy" style={{ marginLeft: '0.5em', marginRight: '0.5em' }}></Calendar>
                 {!startDate && <small className="p-error">Ingresar Fecha</small>}
                 <label htmlFor="endDate">hasta</label>
-                <Calendar id="endDate" onChange={(e) => setEndDate(e.target.value)} showButtonBar dateFormat="dd/mm/yy" style={{marginLeft: '0.5em', marginRight: '0.5em'}}></Calendar>
+                <Calendar id="endDate" onChange={(e) => setEndDate(e.target.value)} showButtonBar dateFormat="dd/mm/yy" style={{ marginLeft: '0.5em', marginRight: '0.5em' }}></Calendar>
                 {!endDate && <small className="p-error">Ingresar Fecha</small>}
-                <span className="p-buttonset" style={{marginLeft: '1em'}}>
+                <span className="p-buttonset" style={{ marginLeft: '1em' }}>
                     <Button label="Filtrar" icon="pi pi-check" className="p-button-sm p-button-info" onClick={filtrarTerneros} />
                     <Button label="Limpiar" icon="pi pi-trash" className="p-button-sm p-button-secondary" onClick={TernerosGet} />
                 </span>
@@ -445,8 +605,7 @@ const Graficas = () => {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                    <Button label="Ultimo mes"  className="p-button-raised p-button-secondary p-button-text" onClick={UltimoMesTGet} />
-                    <Button label="Ultimos 3 meses"  className="p-button-raised p-button-secondary p-button-text" onClick={TernerosGet} />
+                <Button label="Ultimo mes" className="p-button-raised p-button-secondary p-button-text" onClick={UltimoMesTGet} />
             </React.Fragment>
         )
     }
@@ -511,20 +670,20 @@ const Graficas = () => {
                         <div className="flex justify-content-between mb-3">
                             <div>
                                 <span className="block text-600 font-medium mb-3">Partos</span>
-                                <div className="text-900 font-medium text-xl">{partos.length}</div>
+                                <div className="text-900 font-medium text-xl">{sum3}</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                                 <img alt="imgFooter" src="https://i.ibb.co/41M1HP3/heart-rhythm-icon-icons-com-56083.png"></img>
                             </div>
                         </div>
-                        <span className="text-green-500 font-medium">{partosF.length}</span>
+                        <span className="text-green-500 font-medium">{contador}</span>
                         <span className="text-500">registros totales</span>
                     </div>
                 </div>
             </div>
             <br />
 
-            
+
 
 
             <div className="grid">
@@ -534,25 +693,25 @@ const Graficas = () => {
                     <div className="surface-card shadow-2 border-round p-4">
                         <div className="text-900 font-medium text-xl mb-2">Terneros Enfermos/Sanos</div>
                         <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="pie" data={chartData} options={lightOptions} />
+                        <Chart type="pie" data={chartData} options={basico} />
 
                     </div>
-                    
+
                 </div>
 
                 <div className="col-12 lg:col-4">
                     <div className="surface-card shadow-2 border-round p-4">
                         <div className="text-900 font-medium text-xl mb-2">Partos Naturales/Asistidos</div>
                         <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="doughnut" data={chartPartoNA} options={lightOptions} />
+                        <Chart type="doughnut" data={chartPartoNA} options={basico} />
                     </div>
                 </div>
 
                 <div className="col-12 lg:col-4">
                     <div className="surface-card shadow-2 border-round p-4">
-                        <div className="text-900 font-medium text-xl mb-2">Terneros con/sin Parto asociado</div>
+                        <div className="text-900 font-medium text-xl mb-2">Registros totales por Mes</div>
                         <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="pie" data={chartTernP} options={lightOptions} />
+                        <Chart type="polarArea" data={chartDataRegistros} options={lightOptions} />
                     </div>
                 </div>
 
@@ -573,13 +732,24 @@ const Graficas = () => {
                     </div>
                 </div>
 
-                <div className="col-12 lg:col-4">
+                
+
+                <div className="col-12 lg:col-6">
                     <div className="surface-card shadow-2 border-round p-4">
-                        <div className="text-900 font-medium text-xl mb-2">Terneros/Partos totales por Mes</div>
+                        <div className="text-900 font-medium text-xl mb-2">Partos por Mes</div>
                         <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="polarArea" data={chartDataRegistros} options={lightOptions} />
+                        <Chart type="line" data={partosSexos} options={basicOptions} />
                     </div>
                 </div>
+
+                <div className="col-12 lg:col-6">
+                    <div className="surface-card shadow-2 border-round p-4">
+                        <div className="text-900 font-medium text-xl mb-2">Refractometrias por Mes</div>
+                        <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
+                        <Chart type="bar" data={refras} options={horizontalOptions} />
+                    </div>
+                </div>
+
 
 
             </div>

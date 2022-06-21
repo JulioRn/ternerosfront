@@ -65,18 +65,9 @@ export default function GestionAlimentos() {
                 body: JSON.stringify(data),
             }
 
-            )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        alert(result['message'])
-                        if (result['status'] === 'ok') {
-                            toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Alimento registrado', life: 3000 })
-
-                        }
-                    }
-
-                )
+            ).then(
+                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Alimento registrado', life: 3000 })
+                    )
 
                 _alimentos.push(_alimento);
                 setAlimentos(_alimentos);     
@@ -316,7 +307,7 @@ export default function GestionAlimentos() {
             <Dialog visible={deleteAlimentoDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteAlimentoDialogFooter} onHide={hideDeleteAlimentoDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {selectedAlimentos && <span>Seguro desea eliminar el alimento CI: <b>{selectedAlimentos.comentario}</b> ?</span>}
+                    {selectedAlimentos && <span>Seguro desea eliminar el alimento: <b>{selectedAlimentos.nombre}</b> ?</span>}
                 </div>
             </Dialog>
 
