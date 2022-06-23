@@ -347,7 +347,7 @@ export default function GestionGuacheras() {
             <Dialog visible={deleteGuacheraDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteGuacheraDialogFooter} onHide={hideDeleteGuacheraDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {selectedGuacheras && <span>Seguro desea eliminar la guachera: <b>{selectedGuacheras.id_Guachera}</b> ?</span>}
+                    {selectedGuacheras && <span>Seguro desea eliminar la guachera: <b>{selectedGuacheras.id_guachera}</b> ?</span>}
                 </div>
             </Dialog>
 

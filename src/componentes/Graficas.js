@@ -22,8 +22,6 @@ const Graficas = () => {
 
     const [terneros, setTerneros] = useState([]);
     const [guacheras, setGuacheras] = useState([]);
-    const [enfermedades, setEnfermedades] = useState([]);
-    const [partos, setPartos] = useState([]);
     const [muertes, setMuertes] = useState([]);
     const [refractrometrias, setRefractrometrias] = useState([]);
 
@@ -32,7 +30,6 @@ const Graficas = () => {
 
     const [ternerosF, setTernerosF] = useState([]);
     const [muertesF, setMuertesF] = useState([]);
-    const [partosF, setPartosF] = useState([]);
 
 
 
@@ -43,8 +40,6 @@ const Graficas = () => {
     useEffect(() => {
         TernerosGet();
         GuacherasGet();
-        EnfermedadesGet();
-        PartosGet();
         MuertesGet();
         RefractrometriasGet();
     }, [])
@@ -100,26 +95,8 @@ const Graficas = () => {
             )
     }
 
-    const EnfermedadesGet = () => {
-        fetch("http://localhost:8080/enfermedad/getAll")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setEnfermedades(result)
-                }
-            )
-    }
+ 
 
-    const PartosGet = () => {
-        fetch("http://localhost:8080/parto/getAll")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setPartos(result)
-                    setPartosF(result)
-                }
-            )
-    }
 
     const MuertesGet = () => {
         fetch("http://localhost:8080/muerte/getAll")
@@ -143,32 +120,12 @@ const Graficas = () => {
     }
 
 
-    const chartDataRegistros = {
-        labels: ['Terneros', 'Partos', 'Refractomerias', 'Muertes'],
-
-        datasets: [
-            {
-                data: [terneros.length, partos.length, refractrometrias.length, muertes.length],
-                backgroundColor: [
-                    "#FF6384",
-                    "#36A2EB",
-                    "#FFCE56",
-                    "#FFAE56"
-                ],
-                hoverBackgroundColor: [
-                    "#FF6384",
-                    "#36A2EB",
-                    "#FFCE56",
-                    "#FFAE76"
-                ]
-            }]
-    };
+    
 
 
     let sum1 = 0;
     let sum2 = 0;
     let sum3 = 0;
-    let sum4 = 0;
     let sum5 = 0;
     let sum6 = 0;
 
@@ -183,7 +140,6 @@ const Graficas = () => {
     for (let i = 0; i < terneros.length; i++) {
 
         sum3 += (terneros[i].parto != null);
-        sum4 += (terneros[i].parto == null);
 
     }
     let contador = 0;
@@ -195,10 +151,11 @@ const Graficas = () => {
     }
 
 
-    for (let i = 0; i < partos.length; i++) {
-        sum5 += (partos[i].tipoPar === 'Natural');
-        sum6 += (partos[i].tipoPar === 'Asistido');
-
+    for (let i = 0; i < terneros.length; i++) {
+        if(terneros[i].parto !== null){
+        sum5 += (terneros[i].parto.tipoPar === 'Natural');
+        sum6 += (terneros[i].parto.tipoPar === 'Asistido');
+        }
     }
 
 
@@ -236,6 +193,8 @@ const Graficas = () => {
 
     }
 
+   
+
     let sumEneroMM = 0;
     let sumFebreroMM = 0;
     let sumMarzoMM = 0;
@@ -269,39 +228,40 @@ const Graficas = () => {
             if (terneros[i].sexo === 'Macho') {
 
 
-            sumEneroMM += (terneros[i].muerte.fecha.includes('/01/'))
-            sumFebreroMM += (terneros[i].muerte.fecha.includes('/02/'))
-            sumMarzoMM += (terneros[i].muerte.fecha.includes('/03/'))
-            sumAbrilMM += (terneros[i].muerte.fecha.includes('/04/'))
-            sumMayoMM += (terneros[i].muerte.fecha.includes('/05/'))
-            sumJunioMM += (terneros[i].muerte.fecha.includes('/06/'))
-            sumJulioMM += (terneros[i].muerte.fecha.includes('/07/'))
-            sumAgostoMM += (terneros[i].muerte.fecha.includes('/08/'))
-            sumSeptiembreMM += (terneros[i].muerte.fecha.includes('/09/'))
-            sumOctubreMM += (terneros[i].muerte.fecha.includes('/10/'))
-            sumNoviembreMM += (terneros[i].muerte.fecha.includes('/11/'))
-            sumDiciembreMM += (terneros[i].muerte.fecha.includes('/12/'))
+                sumEneroMM += (terneros[i].muerte.fecha.includes('/01/'))
+                sumFebreroMM += (terneros[i].muerte.fecha.includes('/02/'))
+                sumMarzoMM += (terneros[i].muerte.fecha.includes('/03/'))
+                sumAbrilMM += (terneros[i].muerte.fecha.includes('/04/'))
+                sumMayoMM += (terneros[i].muerte.fecha.includes('/05/'))
+                sumJunioMM += (terneros[i].muerte.fecha.includes('/06/'))
+                sumJulioMM += (terneros[i].muerte.fecha.includes('/07/'))
+                sumAgostoMM += (terneros[i].muerte.fecha.includes('/08/'))
+                sumSeptiembreMM += (terneros[i].muerte.fecha.includes('/09/'))
+                sumOctubreMM += (terneros[i].muerte.fecha.includes('/10/'))
+                sumNoviembreMM += (terneros[i].muerte.fecha.includes('/11/'))
+                sumDiciembreMM += (terneros[i].muerte.fecha.includes('/12/'))
 
-        } else if (terneros[i].sexo === 'Hembra') {
+            } else if (terneros[i].sexo === 'Hembra') {
 
 
-            sumEneroMH += (terneros[i].muerte.fecha.includes('/01/'))
-            sumFebreroMH += (terneros[i].muerte.fecha.includes('/02/'))
-            sumMarzoMH += (terneros[i].muerte.fecha.includes('/03/'))
-            sumAbrilMH += (terneros[i].muerte.fecha.includes('/04/'))
-            sumMayoMH += (terneros[i].muerte.fecha.includes('/05/'))
-            sumJunioMH += (terneros[i].muerte.fecha.includes('/06/'))
-            sumJulioMH += (terneros[i].muerte.fecha.includes('/07/'))
-            sumAgostoMH += (terneros[i].muerte.fecha.includes('/08/'))
-            sumSeptiembreMH += (terneros[i].muerte.fecha.includes('/09/'))
-            sumOctubreMH += (terneros[i].muerte.fecha.includes('/10/'))
-            sumNoviembreMH += (terneros[i].muerte.fecha.includes('/11/'))
-            sumDiciembreMH += (terneros[i].muerte.fecha.includes('/12/'))
+                sumEneroMH += (terneros[i].muerte.fecha.includes('/01/'))
+                sumFebreroMH += (terneros[i].muerte.fecha.includes('/02/'))
+                sumMarzoMH += (terneros[i].muerte.fecha.includes('/03/'))
+                sumAbrilMH += (terneros[i].muerte.fecha.includes('/04/'))
+                sumMayoMH += (terneros[i].muerte.fecha.includes('/05/'))
+                sumJunioMH += (terneros[i].muerte.fecha.includes('/06/'))
+                sumJulioMH += (terneros[i].muerte.fecha.includes('/07/'))
+                sumAgostoMH += (terneros[i].muerte.fecha.includes('/08/'))
+                sumSeptiembreMH += (terneros[i].muerte.fecha.includes('/09/'))
+                sumOctubreMH += (terneros[i].muerte.fecha.includes('/10/'))
+                sumNoviembreMH += (terneros[i].muerte.fecha.includes('/11/'))
+                sumDiciembreMH += (terneros[i].muerte.fecha.includes('/12/'))
 
+            }
         }
     }
 
-    }
+    
 
     let sumPEnero = 0;
     let sumPFebrero = 0;
@@ -366,10 +326,60 @@ const Graficas = () => {
 
         }
 
+    }
 
 
+
+
+
+
+    let excelente= 0;
+    let bueno= 0;
+    let regular= 0;
+    let pobre=0;
+
+
+    let excelenteR= 0;
+    let buenoR=0;
+    let regularR=0;
+    let pobreR=0;
+
+    let excelenteC= 0;
+    let buenoC=0;
+    let regularC=0;
+    let pobreC=0;
+
+    
+
+    for (let i = 0; i < refractrometrias.length; i++) {
+
+        if (refractrometrias[i].evento === 'Refractrometro') {
+
+
+            excelenteR += (refractrometrias[i].nota >= 9.4)
+            buenoR += (refractrometrias[i].nota >= 8.9 && refractrometrias[i].nota <= 9.3)
+            regularR += (refractrometrias[i].nota >= 8.1 && refractrometrias[i].nota <= 8.8)
+            pobreR += (refractrometrias[i].nota < 8.1)
+            
+
+        } else if (refractrometrias[i].evento === 'Calostrometro') {
+
+
+            excelenteC += (refractrometrias[i].nota >= 6.2)
+            buenoC += (refractrometrias[i].nota >= 5.8 && refractrometrias[i].nota <= 6.1)
+            regularC += (refractrometrias[i].nota >= 5.1 && refractrometrias[i].nota <= 5.7)
+            pobreC += (refractrometrias[i].nota < 5.1)
+
+        }
+
+        excelente= (excelenteR + excelenteC);
+        bueno= (buenoR + buenoC);
+        regular=(regularR + regularC);
+        pobre= (pobreR + pobreC);
 
     }
+
+
 
 
 
@@ -396,7 +406,7 @@ const Graficas = () => {
         datasets: [
             {
                 label: 'Machos',
-                backgroundColor: 'red',
+                borderColor: '#6B8E23',
                 data: [sumPEnero, sumPFebrero, sumPMarzo, sumPAbril, sumPMayo, sumPJunio, sumPJulio, sumPAgosto, sumPSeptiembre, sumPOctubre, sumPNoviembre, sumPDiciembre],
                 tension: .4,
                 fill: false,
@@ -404,7 +414,7 @@ const Graficas = () => {
             },
             {
                 label: 'Hembras',
-                backgroundColor: 'green',
+                borderColor: '#FFA500',
                 data: [sumPEneroH, sumPFebreroH, sumPMarzoH, sumPAbrilH, sumPMayoH, sumPJunioH, sumPJulioH, sumPAgostoH, sumPSeptiembreH, sumPOctubreH, sumPNoviembreH, sumPDiciembreH],
                 tension: .4,
                 fill: false,
@@ -430,17 +440,24 @@ const Graficas = () => {
             }]
     };
 
+    const chartRefractro = {
+        labels: ['Excelente', 'Bueno', 'Regular', 'Pobre'],
+
+        datasets: [
+            {
+                data: [excelente, bueno, regular, pobre],
+                backgroundColor: [
+                    "#00FF7F",
+                    "#4682B4",
+                    "#D8BFD8",
+                    "#FF6347",
+                ]
+            }]
+    };
 
 
-    const [lightOptions] = useState({
-        plugins: {
-            legend: {
-                labels: {
-                    color: '#000000'
-                }
-            }
-        }
-    });
+
+    
 
     const [basico] = useState({
         plugins: {
@@ -452,52 +469,53 @@ const Graficas = () => {
         }
     });
 
-    const refras = {
-        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-        datasets: [
-            {
-                label: 'Machos',
-                backgroundColor: 'red',
-                data: [sumEneroMM, sumFebreroMM, sumMarzoMM, sumAbrilMM, sumMayoMM, sumJunioMM, sumJulioMM, sumAgostoMM, sumSeptiembreMM, sumOctubreMM, sumNoviembreMM, sumDiciembreMM],
-                tension: .4,
-                fill: false,
-
-            },
-            {
-                label: 'Hembras',
-                backgroundColor: 'green',
-                data: [sumEneroMH, sumFebreroMH, sumMarzoMH, sumAbrilMH, sumMayoMH, sumJunioMH, sumJulioMH, sumAgostoMH, sumSeptiembreMM, sumOctubreMH, sumNoviembreMH, sumDiciembreMH],
-                tension: .4,
-                fill: false,
-
-            }
-        ]
-    };
-
-
-    const basicData = {
-        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-        datasets: [
-            {
-                label: 'Machos',
-                backgroundColor: 'red',
-                data: [sumEneroMM, sumFebreroMM, sumMarzoMM, sumAbrilMM, sumMayoMM, sumJunioMM, sumJulioMM, sumAgostoMM, sumSeptiembreMM, sumOctubreMM, sumNoviembreMM, sumDiciembreMM],
-                tension: .4,
-                fill: false,
-
-            },
-            {
-                label: 'Hembras',
-                backgroundColor: 'green',
-                data: [sumEneroMH, sumFebreroMH, sumMarzoMH, sumAbrilMH, sumMayoMH, sumJunioMH, sumJulioMH, sumAgostoMH, sumSeptiembreMM, sumOctubreMH, sumNoviembreMH, sumDiciembreMH],
-                tension: .4,
-                fill: false,
-
-            }
-        ]
-    };
-
     
+
+
+    const refras = {
+        labels: ['Excelente', 'Bueno', 'Regular', 'Pobre'],
+        datasets: [
+            {
+                label: 'Refractrometro',
+                backgroundColor: '#42A5F5',
+                data: [excelenteR, buenoR, regularR, pobreR],
+
+
+            },
+            {
+                label: 'Calostrometro',
+                backgroundColor: '#FFA726',
+                data: [excelenteC, buenoC, regularC, pobreC],
+
+
+            }
+        ]
+    };
+
+
+    const muertesMes = {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        datasets: [
+            {
+                label: 'Machos',
+                borderColor: '#42A5F5',
+                data: [sumEneroMM, sumFebreroMM, sumMarzoMM, sumAbrilMM, sumMayoMM, sumJunioMM, sumJulioMM, sumAgostoMM, sumSeptiembreMM, sumOctubreMM, sumNoviembreMM, sumDiciembreMM],
+                tension: .4,
+                fill: false,
+
+            },
+            {
+                label: 'Hembras',
+                borderColor: '#00bb7e',
+                data: [sumEneroMH, sumFebreroMH, sumMarzoMH, sumAbrilMH, sumMayoMH, sumJunioMH, sumJulioMH, sumAgostoMH, sumSeptiembreMH, sumOctubreMH, sumNoviembreMH, sumDiciembreMH],
+                tension: .4,
+                fill: false,
+
+            }
+        ]
+    };
+
+
 
     const basicData2 = {
         labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
@@ -665,6 +683,7 @@ const Graficas = () => {
                         <span className="text-500">registros totales</span>
                     </div>
                 </div>
+                
                 <div className="col-12 md:col-6 lg:col-3">
                     <div className="surface-0 shadow-2 p-3 border-1 border-50 border-round">
                         <div className="flex justify-content-between mb-3">
@@ -693,7 +712,7 @@ const Graficas = () => {
                     <div className="surface-card shadow-2 border-round p-4">
                         <div className="text-900 font-medium text-xl mb-2">Terneros Enfermos/Sanos</div>
                         <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="pie" data={chartData} options={basico} />
+                        <Chart type="pie" data={chartData} options={basico}  />
 
                     </div>
 
@@ -709,36 +728,9 @@ const Graficas = () => {
 
                 <div className="col-12 lg:col-4">
                     <div className="surface-card shadow-2 border-round p-4">
-                        <div className="text-900 font-medium text-xl mb-2">Registros totales por Mes</div>
+                        <div className="text-900 font-medium text-xl mb-2">Resutados Calostrados</div>
                         <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="polarArea" data={chartDataRegistros} options={lightOptions} />
-                    </div>
-                </div>
-
-
-                <div className="col-12 lg:col-6">
-                    <div className="surface-card shadow-2 border-round p-4">
-                        <div className="text-900 font-medium text-xl mb-2">Muertes por Mes</div>
-                        <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="line" data={basicData} options={basicOptions} />
-                    </div>
-                </div>
-
-                <div className="col-12 lg:col-6">
-                    <div className="surface-card shadow-2 border-round p-4">
-                        <div className="text-900 font-medium text-xl mb-2">Terneros/Partos totales por Mes</div>
-                        <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="bar" data={basicData2} options={basicOptions} />
-                    </div>
-                </div>
-
-                
-
-                <div className="col-12 lg:col-6">
-                    <div className="surface-card shadow-2 border-round p-4">
-                        <div className="text-900 font-medium text-xl mb-2">Partos por Mes</div>
-                        <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
-                        <Chart type="line" data={partosSexos} options={basicOptions} />
+                        <Chart type="doughnut" data={chartRefractro} options={basico} />
                     </div>
                 </div>
 
@@ -751,7 +743,36 @@ const Graficas = () => {
                 </div>
 
 
+                <div className="col-12 lg:col-6">
+                    <div className="surface-card shadow-2 border-round p-4">
+                        <div className="text-900 font-medium text-xl mb-2">Partos por Mes</div>
+                        <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
+                        <Chart type="line" data={partosSexos} options={basicOptions} />
+                    </div>
+                </div>
 
+                
+                <div className="col-12 lg:col-6">
+                    <div className="surface-card shadow-2 border-round p-4">
+                        <div className="text-900 font-medium text-xl mb-2">Muertes por Mes</div>
+                        <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
+                        <Chart type="line" data={muertesMes} options={basicOptions} />
+                    </div>
+                </div>
+
+                <div className="col-12 lg:col-6">
+                    <div className="surface-card shadow-2 border-round p-4">
+                        <div className="text-900 font-medium text-xl mb-2">Terneros/Partos totales por Mes</div>
+                        <hr className="my-3 mx-0 border-top-1 border-bottom-none border-300" />
+                        <Chart type="bar" data={basicData2} options={horizontalOptions} />
+                    </div>
+                </div>
+
+
+
+               
+
+                
             </div>
         </div>
 
