@@ -59,6 +59,7 @@ export default function GestionTerneros() {
         TernerosGet();
         EnfermedadesGet();
         MuertesGet();
+        RefractrometriasGet();
         initFilters1();
     }, [])
 
@@ -150,6 +151,16 @@ export default function GestionTerneros() {
             fechaD = fechaDesC
         }
 
+        var partoPrueba;
+
+        if (selectedTerneros.parto === null) {
+            partoPrueba = partos[partos.length - 1]
+        }
+
+        if (selectedTerneros.parto !== null) {
+            partoPrueba = selectedTerneros.parto
+        }
+
         console.log(selectedEnfermedad[0])
 
         var data = {
@@ -162,6 +173,7 @@ export default function GestionTerneros() {
             'altura': altura,
             'enfermedad': selectedEnfermedad[0],
             'salud': salud2,
+            'parto': partoPrueba,
         }
         var data2 = {
             'id': idTernero,
@@ -173,6 +185,7 @@ export default function GestionTerneros() {
             'altura': altura,
             'enfermedad': selectedEnfermedad[0],
             'salud': salud2,
+            'parto': partoPrueba,
         }
         let _terneros = [...terneros];
         let _ternero = { ...data2 };
@@ -198,7 +211,7 @@ export default function GestionTerneros() {
 
             ).then(result => {
                 console.log(result);
-                
+
                 toast.current.show({ severity: 'success', summary: 'Acción exitosa!', detail: 'Datos del Ternero registrados', life: 3000 })
             })
 
@@ -218,7 +231,6 @@ export default function GestionTerneros() {
         var data = {
             'id_parto': null,
             'tipoPar': tipoPar,
-            'sexo': sexo,
             'trazabilidad': trazabilidad,
             'retencionPla': retencionPla,
 
@@ -226,7 +238,6 @@ export default function GestionTerneros() {
         var data2 = {
             'id_parto': null,
             'tipoPar': tipoPar,
-            'sexo': sexo,
             'trazabilidad': trazabilidad,
             'retencionPla': retencionPla,
         }
@@ -417,21 +428,21 @@ export default function GestionTerneros() {
 
 
     const tipos = [
-        {label: 'Refractrometro', value: 'Refractrometro'},
-    {label: 'Calostrometro', value: 'Calostrometro'},
-       ];
+        { label: 'Refractrometro', value: 'Refractrometro' },
+        { label: 'Calostrometro', value: 'Calostrometro' },
+    ];
 
-       const tiposCausas = [
-        {label: 'Diarrea', value: 'Diarrea'},
-        {label: 'Neumonía ', value: 'Neumonía'},
-        {label: 'Onfalitis (ombligo)', value: 'Onfalitis (ombligo)'},
-        {label: 'Septicemia ', value: 'Septicemia '},
-        {label: 'Traumática ', value: 'Traumática '},
-        {label: 'Iatrogénica', value: 'Iatrogénica'},
-        {label: 'Problemas congénitos', value: 'Problemas congénitos'},
-        {label: 'Meteorismo', value: 'Meteorismo'},
-    {label: 'Otras', value: 'Otras'},
-       ];
+    const tiposCausas = [
+        { label: 'Diarrea', value: 'Diarrea' },
+        { label: 'Neumonía ', value: 'Neumonía' },
+        { label: 'Onfalitis (ombligo)', value: 'Onfalitis (ombligo)' },
+        { label: 'Septicemia ', value: 'Septicemia ' },
+        { label: 'Traumática ', value: 'Traumática ' },
+        { label: 'Iatrogénica', value: 'Iatrogénica' },
+        { label: 'Problemas congénitos', value: 'Problemas congénitos' },
+        { label: 'Meteorismo', value: 'Meteorismo' },
+        { label: 'Otras', value: 'Otras' },
+    ];
 
     const initFilters1 = () => {
         setFilters1({
@@ -476,6 +487,17 @@ export default function GestionTerneros() {
             )
     }
 
+    const obtenerTernRef = () => {
+        fetch("http://localhost:8080/refractrometria/verificarTern/" + selectedTerneros.id)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setTernerosId(result)
+                    console.log(ternerosId)
+                }
+            )
+    }
+
     const EnfermedadesGet = () => {
         fetch("http://localhost:8080/enfermedad/getAll")
             .then(res => res.json())
@@ -492,6 +514,16 @@ export default function GestionTerneros() {
             .then(
                 (result) => {
                     setPartos(result)
+                }
+            )
+    }
+
+    const RefractrometriasGet = () => {
+        fetch("http://localhost:8080/refractrometria/getAll")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setRefractrometrias(result)
                 }
             )
     }
@@ -547,28 +579,30 @@ export default function GestionTerneros() {
     const [labelFTe, setFLabelTe] = useState('')
 
     const openNewMuerte = () => {
-        setSubmitted(false);
-        setMuerteDialog(true);
 
-        if (selectedTerneros !== null) {
+        if (selectedTerneros !== null && selectedTerneros.muerte !== null) {
+            toast.current.show({ severity: 'error', summary: 'Accion denegada!', detail: 'El ternero ya ha muerto', life: 3000 })
+        } else {
+            setSubmitted(false);
+            setMuerteDialog(true);
             setLabelTe(selectedTerneros.nroTernero)
         }
         console.log(selectedTerneros.nroTernero);
         console.log(labelTe);
 
     }
+    
 
     const openNewRefra = () => {
-        setSubmitted(false);
-        setRefraDialog(true);
 
-        if (selectedTerneros !== null) {
+        
+
+                setLabelTe(selectedTerneros.nroTernero)
+                setFLabelTe(selectedTerneros.fechaNac)
+                setSubmitted(false);
+                setRefraDialog(true);
             
-            setLabelTe(selectedTerneros.nroTernero)
-            setFLabelTe(selectedTerneros.fechaNac)
-        }
-        console.log(selectedTerneros.fechaNac);
-        console.log(labelFTe);
+        
 
     }
 
@@ -603,7 +637,7 @@ export default function GestionTerneros() {
             <React.Fragment>
                 <span className="p-buttonset" style={{ marginLeft: '1em' }}>
 
-                    <Button label="Refractromería" icon="pi pi-check" className="p-button p-component p-button-raised p-button-secundary" onClick={openNewRefra} />
+                    <Button label="Refractrometría" icon="pi pi-check" className="p-button p-component p-button-raised p-button-secundary" onClick={openNewRefra} />
                     <Button label="Ha muerto" icon="pi pi-times-circle" className="p-button p-component p-button-raised p-button-danger" onClick={openNewMuerte} />
                 </span>
             </React.Fragment>
@@ -751,13 +785,15 @@ export default function GestionTerneros() {
 
 
     const cols = [
-        { field: 'cedula', header: 'Cedula' },
-        { field: 'nombre', header: 'Nombre' },
-        { field: 'apellido', header: 'APELLIDO' },
-        { field: 'mail', header: 'MAIL' },
-        { field: 'telefono', header: 'TELEFONO' },
-        { field: 'acceso', header: 'ACCESO' },
-        { field: 'contra', header: 'CONTRA' }
+        { field: 'nroTernero', header: 'NroTernero' },
+        { field: 'fechaNac', header: 'Fech. Nac.' },
+        { field: 'peso', header: 'Peso' },
+        { field: 'fechaDes', header: 'Fech. Des.' },
+        { field: 'pesoDes', header: 'Peso Des.' },
+        { field: 'altura', header: 'Altura' },
+        { field: 'enfermedad', header: 'Enfermedad' },
+        { field: 'parto.id_parto', header: 'Parto' },
+        { field: 'muerte.id_muerte', header: 'Muerte' }
     ];
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
@@ -780,7 +816,7 @@ export default function GestionTerneros() {
             const worksheet = xlsx.utils.json_to_sheet(terneros);
             const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
             const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            saveAsExcelFile(excelBuffer, 'Usuarios');
+            saveAsExcelFile(excelBuffer, 'Terneros');
         });
     }
 
@@ -819,9 +855,8 @@ export default function GestionTerneros() {
                     <Column field="peso" header="PESO"></Column>
                     <Column field="altura" header="ALTURA"></Column>
                     <Column field="parto.id_parto" header="PARTO"></Column>
+                    <Column field="parto.trazabilidad" header="TRAZABILIDAD"></Column>
                     <Column field="enfermedad.nombre" header="ENFERMEDAD"></Column>
-                    <Column field="fechaDes" header="FECHA DESLECHE"></Column>
-                    <Column field="pesoDes" header="PESO DESLECHE"></Column>
 
 
 
@@ -887,21 +922,6 @@ export default function GestionTerneros() {
 
             <Dialog visible={partoDialog} style={{ width: '450px' }} header="Datos Parto" modal className="p-fluid" footer={partoDialogFooter} onHide={hideDialog}>
 
-
-                <div className="field">
-                    <label className="mb-3">Sexo</label>
-                    <div className="formgrid grid">
-                        <div className="field-radiobutton col-6">
-                            <RadioButton inputId="category1S" name="sexo" value="Macho" onChange={(e) => setSexo(e.value)} checked={sexo === 'Macho'} />
-                            <label htmlFor="category1S">Macho</label>
-                        </div>
-                        <div className="field-radiobutton col-6">
-                            <RadioButton inputId="category2S" name="sexo" value="Hembra" onChange={(e) => setSexo(e.value)} checked={sexo === 'Hembra'} />
-                            <label htmlFor="category2S">Hembra</label>
-                        </div>
-                    </div>
-                </div>
-
                 <div className="field">
                     <label className="mb-3">Tipo Parto</label>
                     <div className="formgrid grid">
@@ -946,20 +966,20 @@ export default function GestionTerneros() {
 
                 <div className="field">
                     <label htmlFor="causa">Causa</label>
-                    <Dropdown value={causa} options={tiposCausas} onChange={(e) => setCausa(e.value)} placeholder="Seleccionar causa"/>                    {submitted && !evento && <small className="p-error">Ingresar Evento</small>}
+                    <Dropdown value={causa} options={tiposCausas} onChange={(e) => setCausa(e.value)} placeholder="Seleccionar causa" />                    {submitted && !evento && <small className="p-error">Ingresar Evento</small>}
                     {submitted && !causa && <small className="p-error">Ingresar Causa</small>}
                 </div>
 
                 <div className="field">
                     <label htmlFor="dias">Días</label>
                     <InputText id="dias" onChange={(e) => setDias(e.target.value)} required />
-                 
+
                 </div>
 
                 <div className="field">
                     <label htmlFor="comentario">Comentario</label>
-                    <InputText id="comentario" onChange={(e) => setComentario(e.target.value)} required/>
-                    
+                    <InputText id="comentario" onChange={(e) => setComentario(e.target.value)} required />
+
                 </div>
 
             </Dialog>
@@ -976,7 +996,7 @@ export default function GestionTerneros() {
 
                 <div className="field">
                     <label htmlFor="fechaNac">Fecha Nacimiento</label>
-                    <InputText disabled value={labelFTe} id="fechaNac"/>
+                    <InputText disabled value={labelFTe} id="fechaNac" />
                 </div>
 
                 <div className="field">
@@ -987,7 +1007,7 @@ export default function GestionTerneros() {
 
                 <div className="field">
                     <label htmlFor="evento">Evento</label>
-                    <Dropdown value={evento} options={tipos} onChange={(e) => setEvento(e.value)} placeholder="Seleccionar evento"/>                    {submitted && !evento && <small className="p-error">Ingresar Evento</small>}
+                    <Dropdown value={evento} options={tipos} onChange={(e) => setEvento(e.value)} placeholder="Seleccionar evento" />                    {submitted && !evento && <small className="p-error">Ingresar Evento</small>}
                 </div>
 
                 <div className="field">
