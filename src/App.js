@@ -11,6 +11,7 @@ import GestionAlimentos from './componentes/GestionAlimentos'
 import GestionGuacheras from './componentes/GestionGuacheras'
 import GestionTerneros from './componentes/GestionTerneros'
 import Graficas from './componentes/Graficas'
+import Terneros from './componentes/Terneros'
 
 
 
@@ -56,6 +57,12 @@ function App() {
             <Route path='/GestionE' element={<GestionEnfermedades />}></Route>
         
         </Routes>
+
+        <Routes>
+            <Route path='/Terneros' element={<Terneros />}></Route>
+        
+        </Routes>
+
       </BrowserRouter>
     </>
   );
