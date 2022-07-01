@@ -19,44 +19,51 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
 import ResponsiveAppBar from './ResponsiveAppBar';
 
+import { Dropdown } from 'primereact/dropdown';
 
 
 
 
 
-export default function GestionAlimentos() {
+
+export default function GestionMadres() {
 
     
 
     const navigate = useNavigate();
     const toast = useRef(null);
 
-    const [selectedAlimentos, setSelectedAlimentos] = useState(null);
+    const [selectedMadres, setSelectedMadres] = useState(null);
 
-    const [alimentoDialog, setAlimentoDialog] = useState(false);
+    const [productDialog, setMadreDialog] = useState(false);
 
-    const [alimentos, setAlimentos] = useState([]);
+    const [madres, setMadres] = useState([]);
     useEffect(() => {
-        AlimentosGet();
+        MadresGet();
         initFilters1();
     }, [])
 
 
-    const AlimentoGuardar = () => {
+    const MadreGuardar = () => {
         setSubmitted(true);
 
-        var data = {
-            'id': null,
-            'nombre': nombre,
-            'stock': stock,
-            'comentario': comentario
-        }
-        let _alimentos = [...alimentos];
-        let _alimento = { ...data };
 
-        if (nombre === '') {
+
+        var data = {
+            'id_Madre': null,
+            'nroMadre': nroMadre,
+            'trazabilidad': trazabilidad,
+        }
+        let _madres = [...madres];
+        let _madre = { ...data };
+
+        if (nroMadre === '') {
+            console.log("No se ingreso NroMadre");
+        }
+        if (trazabilidad === '') {
+            console.log("No se ingreso Trazabilidad");
         } else {
-            fetch("http://localhost:8080/alimento/agregar", {
+            fetch("http://localhost:8080/madre/agregar", {
                 method: 'POST',
                 headers: {
                     Accept: 'application/form-data',
@@ -66,31 +73,31 @@ export default function GestionAlimentos() {
             }
 
             ).then(
-                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Alimento registrado', life: 3000 })
+                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Madre registrada', life: 3000 })
                     )
 
-                _alimentos.push(_alimento);
-                setAlimentos(_alimentos);     
-        setAlimentoDialog(false);
+                _madres.push(_madre);
+                setMadres(_madres);     
+        setMadreDialog(false);
 
         }
 
     }
 
-    const [nombre, setNombre] = useState('')
-    const [stock, setStock] = useState('')
-    const [comentario, setComentario] = useState('')
+    const [nroMadre, setNroMadre] = useState('')
+    const [trazabilidad, setTrazabilidad] = useState('')
+    const [idMadre, setIdMadre] = useState('')
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
 
+
     const initFilters1 = () => {
         setFilters1({
             'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
-            'nombre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'stock': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'comentario': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            'nroMadre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'trazabilidad': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
         });
         setGlobalFilterValue1('');
     }
@@ -104,40 +111,40 @@ export default function GestionAlimentos() {
         setGlobalFilterValue1(value);
     }
 
-    const AlimentosGet = () => {
-        fetch("http://localhost:8080/alimento/getAll")
+    const MadresGet = () => {
+        fetch("http://localhost:8080/madre/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
-                    setAlimentos(result)
+                    setMadres(result)
                 }
             )
     }
 
-    const AlimentoDelete = () => {
-        fetch("http://localhost:8080/alimento/eliminar/" + selectedAlimentos.id_alimento)
+    const MadreDelete = () => {
+        fetch("http://localhost:8080/madre/eliminar/" + selectedMadres.id_madre)
             .then(
-                toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Alimento Eliminado', life: 3000 })
+                toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Madre Eliminado', life: 3000 })
 
 
             );
-        let _alimentos = alimentos.filter(val => val.id_alimento !== selectedAlimentos.id_alimento);
-        setAlimentos(_alimentos);
-        setDeleteAlimentoDialog(false);
+        let _madres = madres.filter(val => val.id_madre !== selectedMadres.id_madre);
+        setMadres(_madres);
+        setDeleteMadreDialog(false);
     }
 
 
 
     const openNew = () => {
         setSubmitted(false);
-        setAlimentoDialog(true);
+        setMadreDialog(true);
     }
 
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
+                <Button label="Listar Terneros" icon="pi pi-trash" className="p-button-danger" onClick={() => navigate('/Terneros')}/>
                 
             </React.Fragment>
         )
@@ -163,7 +170,7 @@ export default function GestionAlimentos() {
 
     const header = (
         <div className="table-header">
-            <h5 className="mx-0 my-1">Gestionar Alimentos</h5>
+            <h5 className="mx-0 my-1">Gestionar Madres</h5>
             <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" value={globalFilterValue1} onChange={onGlobalFilterChange1} placeholder="Buscar..." />
@@ -173,13 +180,13 @@ export default function GestionAlimentos() {
 
     const hideDialog = () => {
         setSubmitted(false);
-        setAlimentoDialog(false);
+        setMadreDialog(false);
     }
 
-    const alimentoDialogFooter = (
+    const madreDialogFooter = (
         <React.Fragment>
             <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={AlimentoGuardar} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={MadreGuardar} />
         </React.Fragment>
     );
 
@@ -187,37 +194,33 @@ export default function GestionAlimentos() {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteAlimento(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" selection={selectedMadres} onSelectionChange={(e) => setSelectedMadres(e.value)} onClick={() => confirmDeleteMadre(rowData)} />
             </React.Fragment>
         );
     }
 
-    const [deleteAlimentoDialog, setDeleteAlimentoDialog] = useState(false);
+    const [deleteMadreDialog, setDeleteMadreDialog] = useState(false);
 
-    const hideDeleteAlimentoDialog = () => {
-        setDeleteAlimentoDialog(false);
+    const hideDeleteMadreDialog = () => {
+        setDeleteMadreDialog(false);
     }
 
-    const confirmDeleteAlimento = () => {
-        setDeleteAlimentoDialog(true);
+    const confirmDeleteMadre = () => {
+        setDeleteMadreDialog(true);
     }
 
-    const deleteAlimentoDialogFooter = (
+    const deleteMadreDialogFooter = (
         <React.Fragment>
-            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteAlimentoDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={AlimentoDelete} />
+            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteMadreDialog} />
+            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={MadreDelete} />
         </React.Fragment>
     );
 
 
     const cols = [
-        { field: 'cedula', header: 'Cedula' },
-        { field: 'nombre', header: 'Nombre' },
-        {field: 'apellido', header:'APELLIDO'},
-        {field: 'mail', header:'MAIL'},
-        {field: 'telefono', header:'TELEFONO'},
-        {field: 'acceso', header:'ACCESO'},
-        {field: 'contra', header:'CONTRA'}
+        { field: 'idMadre', header: 'ID MADRE' },
+        { field: 'nroMadre', header: 'NUMERO MADRE' },
+        {field: 'trazabilidad', header:'TRAZABILIDAD'},
     ];
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
@@ -228,7 +231,7 @@ export default function GestionAlimentos() {
         import('jspdf').then(jsPDF => {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default(0, 0);
-                doc.autoTable(exportColumns, alimentos);
+                doc.autoTable(exportColumns, madres);
                 doc.save('Usuarios.pdf');
             })
         })
@@ -237,10 +240,10 @@ export default function GestionAlimentos() {
 
     const exportExcel = () => {
         import('xlsx').then(xlsx => {
-            const worksheet = xlsx.utils.json_to_sheet(alimentos);
+            const worksheet = xlsx.utils.json_to_sheet(madres);
             const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
             const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            saveAsExcelFile(excelBuffer, 'Usuarios');
+            saveAsExcelFile(excelBuffer, 'Madres');
         });
     }
 
@@ -270,44 +273,37 @@ export default function GestionAlimentos() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>                <DataTable value={alimentos} responsiveLayout="scroll" selection={selectedAlimentos} onSelectionChange={(e) => setSelectedAlimentos(e.value)} dataKey="id_alimento" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} alimentos" filters={filters1} globalFilterFields={['nombre', 'stock', 'comentario', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
+            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                            <DataTable value={madres} responsiveLayout="scroll" selection={selectedMadres} onSelectionChange={(e) => setSelectedMadres(e.value)} dataKey="id_madre" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} madres" filters={filters1} globalFilterFields={['tipoMadre', 'trazabilidad', 'gastoAlimento', 'contra', 'acceso', 'gastoMedicamento', 'cantTerneros']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
-                    
-                    <Column field="nombre" header="NOMBRE"></Column>
-                    <Column field="stock" header="STOCK"></Column>
-                    <Column field="comentario" header="COMENTARIO"></Column>
-
+                    <Column field="nroMadre" header="NUMERO DE MADRE"></Column>
+                    <Column field="trazabilidad" header="TRAZABILIDAD"></Column>
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
                 <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
             </div>
 
-            <Dialog visible={alimentoDialog} style={{ width: '450px' }} header="Datos Alimento" modal className="p-fluid" footer={alimentoDialogFooter} onHide={hideDialog}>
+            <Dialog visible={productDialog} style={{ width: '450px' }} header="Datos Madre" modal className="p-fluid" footer={madreDialogFooter} onHide={hideDialog}>
 
                 <div className="field">
-                    <label htmlFor="name">Nombre</label>
-                    <InputText id="name" onChange={(e) => setNombre(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nombre })} />
-                    {submitted && !nombre && <small className="p-error">Ingresar nombre</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="stock">Stock</label>
-                    <InputText id="stock" keyfilter="int" onChange={(e) => setStock(e.target.value)} required className={classNames({ 'p-invalid': submitted && !stock })} />
-                    {submitted && !stock && <small className="p-error">Ingresar stock</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="comentario">Comentario</label>
-                    <InputText id="comentario" onChange={(e) => setComentario(e.target.value)} required className={classNames({ 'p-invalid': submitted && !comentario })} />
-                    {submitted && !comentario && <small className="p-error">Ingresar Comentario</small>}
+                    <label htmlFor="nroMadre">Numero Madre</label>
+                    <InputText id="nroMadre" onChange={(e) => setNroMadre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nroMadre })} />
+                    {submitted && !nroMadre && <small className="p-error">Ingresar Nro Madre</small>}
                 </div>
                 
+                <div className="field">
+                    <label htmlFor="trazabilidad">Trazabilidad</label>
+                    <InputText id="trazabilidad" onChange={(e) => setTrazabilidad(e.target.value)} required className={classNames({ 'p-invalid': submitted && !trazabilidad })} />
+                    {submitted && !trazabilidad && <small className="p-error">Ingresar Trazabilidad</small>}
+                </div>
 
             </Dialog>
 
-            <Dialog visible={deleteAlimentoDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteAlimentoDialogFooter} onHide={hideDeleteAlimentoDialog}>
+            <Dialog visible={deleteMadreDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteMadreDialogFooter} onHide={hideDeleteMadreDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {selectedAlimentos && <span>Seguro desea eliminar el alimento: <b>{selectedAlimentos.nombre}</b> ?</span>}
+                    {selectedMadres && <span>Seguro desea eliminar la madre: <b>{selectedMadres.id_madre}</b> ?</span>}
                 </div>
             </Dialog>
 

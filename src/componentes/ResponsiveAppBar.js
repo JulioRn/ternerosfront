@@ -77,6 +77,7 @@ const ResponsiveAppBar = () => {
                 <MenuItem onClick={handleCloseNavMenu} style={{display: 'grid'}}>
                   <Button onClick={() => navigate('/GestionU')}>Usuarios</Button>
               <Button onClick={() => navigate('/GestionT')}>Terneros</Button>
+              <Button onClick={() => navigate('/GestionM')}>Madres</Button>
               <Button onClick={() => navigate('/GestionG')}>Guacheras</Button>
               <Button onClick={() => navigate('/GestionE')}>Enfermedades</Button>
               <Button onClick={() => navigate('/GestionA')}>Alimentos</Button>
@@ -98,6 +99,7 @@ const ResponsiveAppBar = () => {
             
               <Button onClick={() => navigate('/GestionU')}sx={{ my: 2, color: 'white', display: 'block' }}>Usuarios</Button>
               <Button onClick={() => navigate('/GestionT')}sx={{ my: 2, color: 'white', display: 'block' }}>Terneros</Button>
+              <Button onClick={() => navigate('/GestionM')}sx={{ my: 2, color: 'white', display: 'block' }}>Madres</Button>
               <Button onClick={() => navigate('/GestionG')}sx={{ my: 2, color: 'white', display: 'block' }}>Guacheras</Button>
               <Button onClick={() => navigate('/GestionE')}sx={{ my: 2, color: 'white', display: 'block' }}>Enfermedades</Button>
               <Button onClick={() => navigate('/GestionA')}sx={{ my: 2, color: 'white', display: 'block' }}>Alimentos</Button>

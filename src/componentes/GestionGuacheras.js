@@ -54,9 +54,6 @@ export default function GestionGuacheras() {
             'nroGuachera': nroGuachera,
             'tipoGuachera': tipoGuachera,
             'descripcion': descripcion,
-            'gastoAlimento': gastoAlimento,
-            'gastoMedicamento': gastoMedicamento,
-            'cantTerneros': cantTerneros,
         }
         let _guacheras = [...guacheras];
         let _guachera = { ...data };
@@ -92,9 +89,6 @@ export default function GestionGuacheras() {
     const [nroGuachera, setNroGuachera] = useState('')
     const [tipoGuachera, setTipoGuachera] = useState('')
     const [descripcion, setDescripcion] = useState('')
-    const [gastoAlimento, setGastoAlimento] = useState('')
-    const [gastoMedicamento, setGastoMedicamento] = useState('')
-    const [cantTerneros, setCantTerneros] = useState('')
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
@@ -234,13 +228,10 @@ export default function GestionGuacheras() {
 
 
     const cols = [
-        { field: 'cedula', header: 'Cedula' },
-        { field: 'nombre', header: 'Nombre' },
-        {field: 'apellido', header:'APELLIDO'},
-        {field: 'mail', header:'MAIL'},
-        {field: 'telefono', header:'TELEFONO'},
-        {field: 'acceso', header:'ACCESO'},
-        {field: 'contra', header:'CONTRA'}
+        { field: 'id_guachera', header: 'ID' },
+        { field: 'nroGuachera', header: 'NUMERO GUACHERA' },
+        {field: 'tipoGuachera', header:'TIPO'},
+        {field: 'descripcion', header:'DESCRIPCION'},
     ];
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
@@ -252,7 +243,7 @@ export default function GestionGuacheras() {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default(0, 0);
                 doc.autoTable(exportColumns, guacheras);
-                doc.save('Usuarios.pdf');
+                doc.save('Guacheras.pdf');
             })
         })
     }
@@ -263,7 +254,7 @@ export default function GestionGuacheras() {
             const worksheet = xlsx.utils.json_to_sheet(guacheras);
             const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
             const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            saveAsExcelFile(excelBuffer, 'Usuarios');
+            saveAsExcelFile(excelBuffer, 'Guacheras');
         });
     }
 
@@ -300,9 +291,6 @@ export default function GestionGuacheras() {
                     <Column field="nroGuachera" header="NRO DE GUACHERA"></Column>
                     <Column field="tipoGuachera" header="TIPO DE GUACHERA"></Column>
                     <Column field="descripcion" header="DESCRIPCION"></Column>
-                    <Column field="gastoMedicamento" header="GASTOS MEDICAMENTO"></Column>
-                    <Column field="cantTerneros" header="CANTIDAD TERNEROS"></Column>
-                    <Column field="gastoAlimento" header="GASTOS ALIMENTOS" r></Column>
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
                 <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
@@ -326,21 +314,7 @@ export default function GestionGuacheras() {
                     <InputText id="descripcion" onChange={(e) => setDescripcion(e.target.value)} required className={classNames({ 'p-invalid': submitted && !descripcion })} />
                     {submitted && !descripcion && <small className="p-error">Ingresar Descripción</small>}
                 </div>
-                <div className="field">
-                    <label htmlFor="gastoAlimento">Gastos de Alimentos</label>
-                    <InputText id="gastoAlimento" onChange={(e) => setGastoAlimento(e.target.value)} required className={classNames({ 'p-invalid': submitted && !gastoAlimento })} />
-                    {submitted && !gastoAlimento && <small className="p-error">Ingresar Gastos de Alimentos</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="gastoMedicamento">Gastos de Medicamentos</label>
-                    <InputText id="gastoMedicamento" onChange={(e) => setGastoMedicamento(e.target.value)} required className={classNames({ 'p-invalid': submitted && !gastoMedicamento })} />
-                    {submitted && !gastoMedicamento && <small className="p-error">Ingresar Gastos de Medicamentos</small>}
-                </div>
-                <div className="field">
-                    <label htmlFor="cantTerneros">Cantidad de Terneros</label>
-                    <InputText id="cantTerneros" onChange={(e) => setCantTerneros(e.target.value)} required className={classNames({ 'p-invalid': submitted && !cantTerneros })} />
-                    {submitted && !cantTerneros && <small className="p-error">Ingresar Cantidad de Terneros</small>}
-                </div>
+                
 
             </Dialog>
 
