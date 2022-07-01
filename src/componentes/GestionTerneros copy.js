@@ -23,7 +23,6 @@ import ResponsiveAppBar from './ResponsiveAppBar';
 import { MultiSelect } from 'primereact/multiselect';
 import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
-import { InputTextarea } from 'primereact/inputtextarea';
 
 
 
@@ -51,6 +50,8 @@ export default function GestionTerneros() {
     const [terneros, setTerneros] = useState([]);
     const [enfermedades, setEnfermedades] = useState([]);
     const [refractrometrias, setRefractrometrias] = useState([]);
+    const [ternerosId, setTernerosId] = useState('');
+
     const [disa, setDisa] = useState(false);
 
 
@@ -174,7 +175,6 @@ export default function GestionTerneros() {
             'salud': salud2,
             'parto': partoPrueba,
             'trazabilidad': trazabilidad,
-            'sexo': sexo,
         }
         var data2 = {
             'id': idTernero,
@@ -188,7 +188,6 @@ export default function GestionTerneros() {
             'salud': salud2,
             'parto': partoPrueba,
             'trazabilidad': trazabilidad,
-            'sexo': sexo,
         }
         let _terneros = [...terneros];
         let _ternero = { ...data2 };
@@ -392,9 +391,6 @@ export default function GestionTerneros() {
 
     }
 
-    //DATOS TERNEROS
-    const [descEnfe, setDescEnfe] = useState('')
-    const [sexo, setSexo] = useState('')
     const [idTernero, setIdTernero] = useState(null)
     const [nroTernero, setNroTernero] = useState('')
     const [fechaNac, setFechaNac] = useState('')
@@ -403,25 +399,25 @@ export default function GestionTerneros() {
     const [parto, setParto] = useState('')
     const [pesoDes, setPesoDes] = useState('')
     const [altura, setAltura] = useState('')
-    const [trazabilidad, setTrazabilidad] = useState('')
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
 
-    //DATOS PARTO
     const [tipoPar, setTipoPar] = useState('')
+    const [sexo, setSexo] = useState('')
+    const [trazabilidad, setTrazabilidad] = useState('')
     const [retencionPla, setRetencionPla] = useState('')
 
 
-    //DATOS MUERTE
+
     const [fechaMuerte, setFechaMuerte] = useState('')
     const [causa, setCausa] = useState('')
     const [dias, setDias] = useState('')
     const [comentario, setComentario] = useState('')
 
-    //DATOS REFRACTROMETRIA
     const [fechaRefra, setFechaRefra] = useState('')
+    const [edad, setEdad] = useState('')
     const [nota, setNota] = useState('')
     const [evento, setEvento] = useState('')
 
@@ -446,11 +442,6 @@ export default function GestionTerneros() {
         { label: 'Problemas congénitos', value: 'Problemas congénitos' },
         { label: 'Meteorismo', value: 'Meteorismo' },
         { label: 'Otras', value: 'Otras' },
-    ];
-
-    const sexoHM = [
-        { label: 'MACHO', value: 'MACHO' },
-        { label: 'HEMBRA', value: 'HEMBRA' },
     ];
 
     const initFilters1 = () => {
@@ -485,8 +476,27 @@ export default function GestionTerneros() {
             )
     }
 
-   
+    const TernerosGetId = () => {
+        fetch("http://localhost:8080/ternero/getById/" + selectedTerneros.id)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setTernerosId(result)
+                    console.log(ternerosId)
+                }
+            )
+    }
 
+    const obtenerTernRef = () => {
+        fetch("http://localhost:8080/refractrometria/verificarTern/" + selectedTerneros.id)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setTernerosId(result)
+                    console.log(ternerosId)
+                }
+            )
+    }
 
     const EnfermedadesGet = () => {
         fetch("http://localhost:8080/enfermedad/getAll")
@@ -581,18 +591,18 @@ export default function GestionTerneros() {
         console.log(labelTe);
 
     }
-
+    
 
     const openNewRefra = () => {
 
+        
 
-
-        setLabelTe(selectedTerneros.nroTernero)
-        setFLabelTe(selectedTerneros.fechaNac)
-        setSubmitted(false);
-        setRefraDialog(true);
-
-
+                setLabelTe(selectedTerneros.nroTernero)
+                setFLabelTe(selectedTerneros.fechaNac)
+                setSubmitted(false);
+                setRefraDialog(true);
+            
+        
 
     }
 
@@ -716,13 +726,9 @@ export default function GestionTerneros() {
 
             moment.defaultFormat = "DD.MM.YYYY HH:mm";
 
-            if (selectedTerneros.enfermedad !== null) {
-                setDescEnfe(selectedTerneros.enfermedad.observaciones)
-            }
             setDisa(true);
             setIdTernero(selectedTerneros.id)
             setAltura(selectedTerneros.altura)
-            setSexo(selectedTerneros.sexo)
             setNroTernero(selectedTerneros.nroTernero)
             setPeso(selectedTerneros.peso)
             setFechaNac(moment(selectedTerneros.fechaNac, moment.defaultFormat).toDate())
@@ -736,12 +742,6 @@ export default function GestionTerneros() {
                 setFechaDes(moment(selectedTerneros.fechaDes, moment.defaultFormat).toDate())
             } if (selectedTerneros.fechaDes === '') {
                 setFechaDes(null)
-            }
-
-            if (selectedTerneros.muerte !== null) {
-                setFechaMuerte(moment(selectedTerneros.muerte.fechaMuerte, moment.defaultFormat).toDate())
-                setCausa(selectedTerneros.muerte.causa)
-                setComentario(selectedTerneros.muerte.comentario)
             }
 
             console.log(selectedTerneros.fechaNac)
@@ -760,7 +760,6 @@ export default function GestionTerneros() {
         setFechaNac('');
         setFechaDes('');
         setPesoDes('');
-        setDescEnfe('');
     }
 
     const deleteTerneroDialogFooter = (
@@ -867,109 +866,55 @@ export default function GestionTerneros() {
                 <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} right={opcionesToolbar} ></Toolbar>
             </div>
 
-            <Dialog visible={terneroDialog} style={{ width: '90%' }} header="Datos Ternero" modal className="p-fluid" footer={terneroDialogFooter} onHide={hideDialog}>
-                <div class="surface-card p-4 border-round p-fluid">
-                    <Divider align="center">
-                        <span className="p-tag">Nacimiento</span>
-                    </Divider>
-                    <div class="grid formgrid p-fluid">
-
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="nroTernero" class="font-medium text-900">Nro Ternero</label>
-                            <InputText disabled={disa} value={nroTernero} id="nroTernero" onChange={(e) => setNroTernero(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nroTernero })} />
-                            {submitted && !nroTernero && <small className="p-error">Ingresar Nro Ternero</small>}
-                        </div>
-
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="fechaNac">Fecha Nacimiento</label>
-                            <Calendar disabled={disa} value={fechaNac} placeholder={fechaNac} id="fechaNac" dateFormat="dd/mm/yy" onChange={(e) => setFechaNac(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !fechaNac })}></Calendar>                    {submitted && !fechaNac && <small className="p-error">Ingresar fechaNac</small>}
-                        </div>
-
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="trazabilidad">Trazabilidad</label>
-                            <InputText value={trazabilidad} id="trazabilidad" onChange={(e) => setTrazabilidad(e.target.value)} keyfilter="int" />
-                        </div>
+            <Dialog visible={terneroDialog} style={{ width: '450px' }} header="Datos Ternero" modal className="p-fluid" footer={terneroDialogFooter} onHide={hideDialog}>
 
 
-                        <div class="field mb-4 col-6 md:col-3">
-                            <label htmlFor="peso">Peso Nacimiento</label>
-                            <InputText value={peso} keyfilter="num" id="peso" locale="es" onChange={(e) => setPeso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !peso })} />
-                            {submitted && !peso && <small className="p-error">Ingresar Peso Nacimiento</small>}
-                        </div>
+                <Divider align="center">
+                    <span className="p-tag">Nacimiento</span>
+                </Divider>
+                <div className="field">
+                    <label htmlFor="nroTernero">Nro Ternero</label>
+                    <InputText disabled={disa} value={nroTernero} id="nroTernero" onChange={(e) => setNroTernero(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nroTernero })} />
+                    {submitted && !nroTernero && <small className="p-error">Ingresar Nro Ternero</small>}
+                </div>
+                <div className="field">
+                    <label htmlFor="fechaNac">Fecha Nacimiento</label>
+                    <Calendar disabled={disa} value={fechaNac} placeholder={fechaNac} id="fechaNac" dateFormat="dd/mm/yy" onChange={(e) => setFechaNac(e.target.value)} showButtonBar required className={classNames({ 'p-invalid': submitted && !fechaNac })}></Calendar>                    {submitted && !fechaNac && <small className="p-error">Ingresar fechaNac</small>}
+                </div>
+                <div className="field">
+                    <label htmlFor="peso">Peso Nacimiento</label>
+                    <InputText value={peso} id="peso" locale="es" onChange={(e) => setPeso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !peso })} />
+                    {submitted && !peso && <small className="p-error">Ingresar Peso Nacimiento</small>}
+                </div>
 
-                        <div class="field mb-4 col-6 md:col-3">
-                            <label htmlFor="altura">Altura</label>
-                            <InputText value={altura} keyfilter="num" id="altura" onChange={(e) => setAltura(e.target.value)} required className={classNames({ 'p-invalid': submitted && !peso })} />
-                            {submitted && !altura && <small className="p-error">Ingresar Altura</small>}
-                        </div>
+                <div className="field">
+                    <label htmlFor="altura">Altura</label>
+                    <InputText value={altura} id="altura" onChange={(e) => setAltura(e.target.value)} required className={classNames({ 'p-invalid': submitted && !peso })} />
+                    {submitted && !altura && <small className="p-error">Ingresar Altura</small>}
+                </div>
 
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="sexo">Sexo</label>
-                            <Dropdown value={sexo} options={sexoHM} onChange={(e) => setSexo(e.value)} placeholder="Seleccionar sexo" />
-                            {submitted && !evento && <small className="p-error">Ingresar sexo</small>}
+                <Divider align="center">
+                    <span className="p-tag">Salida</span>
+                </Divider>
 
-                        </div>
+                <div className="field">
+                    <label htmlFor="fechaDes">Fecha Desleche</label>
+                    <Calendar value={fechaDes} placeholder={fechaDes} id="fechaDes" dateFormat="dd/mm/yy" onChange={(e) => setFechaDes(e.target.value)} showButtonBar></Calendar>
 
-                        <div class="field mb-4 col-12 md:col-6">
+                </div>
 
-                        </div>
+                <div className="field">
+                    <label htmlFor="pesoDes">Peso Desleche</label>
+                    <InputText value={pesoDes} id="pesoDes" onChange={(e) => setPesoDes(e.target.value)} />
 
-                        <Divider align="center">
-                            <span className="p-tag">Enfermedad</span>
-                        </Divider>
-
-
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="altura">Enfermedad</label>
-                            <MultiSelect value={selectedEnfermedad} options={enfermedades} onChange={(e) => setSelectedEnfermedad(e.value)} optionLabel="nombre" placeholder="Seleccionar Enfermedad" maxSelectedLabels={3} />
-                        </div>
-
-
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="descEnfe">Descripción</label>
-                            <InputTextarea disabled value={descEnfe} id="descEnfe" autoResize />
-                        </div>
-
-                        <Divider align="center">
-                            <span className="p-tag">Salida</span>
-                        </Divider>
+                </div>
 
 
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="fechaDes">Fecha Desleche</label>
-                            <Calendar value={fechaDes} placeholder={fechaDes} id="fechaDes" dateFormat="dd/mm/yy" onChange={(e) => setFechaDes(e.target.value)} showButtonBar></Calendar>
-                        </div>
 
+                <div className="field">
+                    <label htmlFor="altura">Enfermedad</label>
+                    <MultiSelect value={selectedEnfermedad} options={enfermedades} onChange={(e) => setSelectedEnfermedad(e.value)} optionLabel="nombre" placeholder="Seleccionar Enfermedad" maxSelectedLabels={3} />
 
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="pesoDes">Peso Desleche</label>
-                            <InputText value={pesoDes} keyfilter="num" id="pesoDes" onChange={(e) => setPesoDes(e.target.value)} />
-                        </div>
-
-                        <Divider align="center">
-                            <span className="p-tag">Muerte</span>
-                        </Divider>
-
-
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="fechaMuerte">Fecha</label>
-                            <InputText disabled value={fechaMuerte} id="fechaMuerte" />
-                        </div>
-
-
-                        <div class="field mb-4 col-12 md:col-6">
-                            <label htmlFor="causa">Causa</label>
-                            <InputText disabled value={causa} id="causa" onChange={(e) => setCausa(e.target.value)} />
-                        </div>
-
-                        <div class="field mb-4 col-12">
-                            <label htmlFor="comentario">Comentario</label>
-                            <InputTextarea disabled value={comentario} id="comentario" autoResize />
-                        </div>
-
-                        <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
-</div>
-                    </div>
                 </div>
 
 
@@ -989,6 +934,12 @@ export default function GestionTerneros() {
                             <label htmlFor="category2">Asistido</label>
                         </div>
                     </div>
+                </div>
+
+                <div className="field">
+                    <label htmlFor="trazabilidad">Trazabilidad</label>
+                    <InputText id="trazabilidad" onChange={(e) => setTrazabilidad(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !trazabilidad })} />
+                    {submitted && !trazabilidad && <small className="p-error">Ingresar Trazabilidad</small>}
                 </div>
 
                 <div className="field">

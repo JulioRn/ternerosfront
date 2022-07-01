@@ -12,6 +12,11 @@ import GestionGuacheras from './componentes/GestionGuacheras'
 import GestionTerneros from './componentes/GestionTerneros'
 import Graficas from './componentes/Graficas'
 import Terneros from './componentes/Terneros'
+import GestionMadres from './componentes/GestionMadres'
+import DatosTerneros from './componentes/DatosTerneros'
+import LogIn from './componentes/LogIn'
+
+
 
 
 
@@ -23,7 +28,7 @@ function App() {
       <BrowserRouter>
 
         <Routes>
-          <Route path='/' element={<IniciarSesion />}></Route>
+          <Route path='/borrador' element={<IniciarSesion />}></Route>
         </Routes>
 
 
@@ -60,6 +65,21 @@ function App() {
 
         <Routes>
             <Route path='/Terneros' element={<Terneros />}></Route>
+        
+        </Routes>
+
+        <Routes>
+            <Route path='/GestionM' element={<GestionMadres />}></Route>
+        
+        </Routes>
+
+        <Routes>
+            <Route path='/DatosT' element={<DatosTerneros />}></Route>
+        
+        </Routes>
+
+        <Routes>
+            <Route path='/' element={<LogIn />}></Route>
         
         </Routes>
 

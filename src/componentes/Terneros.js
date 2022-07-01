@@ -38,21 +38,17 @@ const Terneros = () => {
             )
     }
 
-    var myArray = [];
-
-    for (let i = 0; i < terneros.length; i++){
-        if(terneros[i].salud === 'https://i.ibb.co/NC0Km72/1.png'){
-            myArray.push('Saludable') 
-        }
-        if(terneros[i].salud === 'https://i.ibb.co/2t2dPKp/2.png'){
-            myArray.push('Enfermo') 
-        }
-        if(terneros[i].salud === 'https://i.ibb.co/sC2PpWJ/3.png'){
-            myArray.push('Muerto') 
-        }
+    const filtrarTerneros = () => {
+        fetch("http://localhost:8080/ternero/madreTern/" + selectMadre.idMadre)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    setTerneros(result)
+                }
+            )        
     }
 
-    console.log(myArray)
+
 
 
 
@@ -73,7 +69,7 @@ const Terneros = () => {
         );
     }
 
-    const footer = <Button type="text" icon="pi pi-plus" label="Load" onClick={() => ds.current.load()} />;
+    const footer = <Button type="text" icon="pi pi-plus" label="Cargar" onClick={() => ds.current.load()} />;
 
     
     const leftToolbarTemplate = () => {
@@ -82,7 +78,9 @@ const Terneros = () => {
                 <label htmlFor="startDate">Seleccionar Madre</label>
                 
                     <Dropdown value={selectMadre} options={madres} onChange={(e) => setSelectMadre(e.value)} optionLabel="nroMadre" placeholder="Seleccionar madre"/>
-            
+                    <Button label="Filtrar" icon="pi pi-check" className="p-button-sm p-button-info" onClick={filtrarTerneros} />
+                    <Button label="Limpiar" icon="pi pi-trash" className="p-button-sm p-button-secondary" onClick={TernerosGet} />
+
 
             </React.Fragment>
         )
@@ -94,7 +92,7 @@ const Terneros = () => {
             <Toolbar className=" shadow-2 mb-4" left={leftToolbarTemplate} ></Toolbar>
             <div className="card">
                 <DataScroller ref={ds} value={terneros} itemTemplate={itemTemplate} rows={5}
-                    loader footer={footer} header="Terneros" />
+                    loader footer={footer} header="Terneros" placeholder="Seleccionar Madre"/>
             </div>
         </div>
     );
