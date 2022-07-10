@@ -7,19 +7,19 @@ import { Toolbar } from 'primereact/toolbar';
 import './DataScrollerDemo.css';
 
 
-const Terneros = () => {
+const TernerosG = () => {
     const [terneros, setTerneros] = useState([]);
-    const [madres, setMadres] = useState([]);
-    const [selectMadre, setSelectMadre] = useState([]);
+    const [guacheras, setGuacheras] = useState([]);
+    const [selectGuachera, setSelectGuachera] = useState([]);
     const ds = useRef(null);
 
     useEffect(() => {
         TernerosGet();
-        MadresGet();
+        GuacherasGet();
     }, []); 
 
     const TernerosGet = () => {
-        fetch("http://localhost:8080/ternero/getAll")
+        fetch("http://localhost:8080/ternero/ternGuach")
             .then(res => res.json())
             .then(
                 (result) => {
@@ -28,18 +28,19 @@ const Terneros = () => {
             )
     }
 
-    const MadresGet = () => {
-        fetch("http://localhost:8080/madre/getAll")
+    const GuacherasGet = () => {
+        fetch("http://localhost:8080/guachera/getAll")
             .then(res => res.json())
             .then(
                 (result) => {
-                    setMadres(result)
+                    setGuacheras(result)
                 }
             )
     }
 
+
     const filtrarTerneros = () => {
-        fetch("http://localhost:8080/ternero/madreTern/" + selectMadre.idMadre)
+        fetch("http://localhost:8080/ternero/filtrarTGuach/" + selectGuachera.nroGuachera)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -75,9 +76,9 @@ const Terneros = () => {
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <label htmlFor="startDate">Seleccionar Madre</label>
+                <label htmlFor="startDate">Seleccionar Guachera</label>
                 
-                    <Dropdown value={selectMadre} options={madres} onChange={(e) => setSelectMadre(e.value)} optionLabel="nroMadre" placeholder="Seleccionar madre" style={{ marginLeft: '0.5em', marginRight: '0.5em' }}/>
+                    <Dropdown value={selectGuachera} options={guacheras} onChange={(e) => setSelectGuachera(e.value)} optionLabel="nroGuachera" placeholder="Seleccionar guachera" style={{ marginLeft: '0.5em', marginRight: '0.5em' }}/>
                     <span className="p-buttonset" style={{ marginLeft: '1em' }}>
                     <Button label="Filtrar" icon="pi pi-check" className="p-button-sm p-button-info" onClick={filtrarTerneros} />
                     <Button label="Limpiar" icon="pi pi-trash" className="p-button-sm p-button-secondary" onClick={TernerosGet} />
@@ -100,4 +101,4 @@ const Terneros = () => {
 }
                  
 
-export default Terneros;
+export default TernerosG;

@@ -49,7 +49,7 @@ export default function GestionEnfermedades() {
 
 
         var data = {
-            'id_enfermedad': null,
+            'id_enfermedad': idEnfermedad,
             'nombre': nombre,
             'observaciones': observaciones,
         }
@@ -75,11 +75,12 @@ export default function GestionEnfermedades() {
                 _enfermedades.push(_enfermedad);
                 setEnfermedades(_enfermedades);     
         setEnfermedadDialog(false);
-
+        limpiarEnfermedad();
         }
 
     }
 
+    const [idEnfermedad, setIdEnfermedad] = useState(null)
     const [nombre, setNombre] = useState('')
     const [observaciones, setObservaciones] = useState('')
     const [filters1, setFilters1] = useState(null);
@@ -150,7 +151,7 @@ export default function GestionEnfermedades() {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
+                
                 
             </React.Fragment>
         )
@@ -159,20 +160,12 @@ export default function GestionEnfermedades() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                 
-                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
-                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
+                <Button label="Terneros Enfermos" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/TernerosE')}/>
             </React.Fragment>
         )
     }
 
-    const regresarToolbar = () => {
-        return (
-            <React.Fragment>
-                <Button label="Volver" icon="pi pi-backward" className="p-button p-component p-button-raised p-button-success" onClick={() => navigate(-1)} />
-            </React.Fragment>
-        )
-    }
+    
 
     const header = (
         <div className="table-header">
@@ -185,6 +178,7 @@ export default function GestionEnfermedades() {
     );
 
     const hideDialog = () => {
+        limpiarEnfermedad();
         setSubmitted(false);
         setEnfermedadDialog(false);
     }
@@ -199,7 +193,7 @@ export default function GestionEnfermedades() {
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" onClick={() => editEnfermedad()} />
                 <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteEnfermedad(rowData)} />
             </React.Fragment>
         );
@@ -223,51 +217,24 @@ export default function GestionEnfermedades() {
     );
 
 
-    const cols = [
-        { field: 'id_enfermedad', header: 'ID ENFERMEDAD' },
-        { field: 'nombre', header: 'NOMBRE' },
-        {field: 'observaciones', header:'OBSERAVCIONES'},
-    ];
+    const editEnfermedad = () => {
+        if (selectedEnfermedades !== null) {
 
-    const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
+            setIdEnfermedad(selectedEnfermedades.id_enfermedad);
+            setNombre(selectedEnfermedades.nombre);
+            setObservaciones(selectedEnfermedades.observaciones);
 
+        }
 
-
-    const exportPdf = () => {
-        import('jspdf').then(jsPDF => {
-            import('jspdf-autotable').then(() => {
-                const doc = new jsPDF.default(0, 0);
-                doc.autoTable(exportColumns, enfermedades);
-                doc.save('Usuarios.pdf');
-            })
-        })
+        setEnfermedadDialog(true);
     }
 
+    const limpiarEnfermedad = () => {
 
-    const exportExcel = () => {
-        import('xlsx').then(xlsx => {
-            const worksheet = xlsx.utils.json_to_sheet(enfermedades);
-            const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-            const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            saveAsExcelFile(excelBuffer, 'Usuarios');
-        });
+        setIdEnfermedad(null);
+        setNombre('');
+        setObservaciones('');
     }
-
-    const saveAsExcelFile = (buffer, fileName) => {
-        import('file-saver').then(module => {
-            if (module && module.default) {
-                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-                let EXCEL_EXTENSION = '.xlsx';
-                const data = new Blob([buffer], {
-                    type: EXCEL_TYPE
-                });
-
-                module.default.saveAs(data, fileName + EXCEL_EXTENSION);
-            }
-        });
-    }
-
-
 
 
     return (
@@ -288,7 +255,7 @@ export default function GestionEnfermedades() {
                    
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
-                <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
+                <Toolbar className="p-toolbar p-component mb-4" ></Toolbar>
             </div>
 
             <Dialog visible={enfermedadDialog} style={{ width: '450px' }} header="Datos Enfermedad" modal className="p-fluid" footer={enfermedadDialogFooter} onHide={hideDialog}>
@@ -296,13 +263,13 @@ export default function GestionEnfermedades() {
 
             <div className="field">
                     <label htmlFor="nombre">Nombre</label>
-                    <InputText id="nombre" onChange={(e) => setNombre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nombre })} />
+                    <InputText value={nombre} id="nombre" onChange={(e) => setNombre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nombre })} />
                     {submitted && !nombre && <small className="p-error">Ingresar Nombre</small>}
                 </div>
 
                 <div className="field">
                     <label htmlFor="observaciones">Observacion</label>
-                    <InputText id="observaciones" onChange={(e) => setObservaciones(e.target.value)} required className={classNames({ 'p-invalid': submitted && !observaciones })} />
+                    <InputText value={observaciones} id="observaciones" onChange={(e) => setObservaciones(e.target.value)} required className={classNames({ 'p-invalid': submitted && !observaciones })} />
                     {submitted && !observaciones && <small className="p-error">Ingresar Observacion</small>}
                 </div>
                 

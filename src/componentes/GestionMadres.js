@@ -35,7 +35,7 @@ export default function GestionMadres() {
 
     const [selectedMadres, setSelectedMadres] = useState(null);
 
-    const [productDialog, setMadreDialog] = useState(false);
+    const [madreDialog, setMadreDialog] = useState(false);
 
     const [madres, setMadres] = useState([]);
     useEffect(() => {
@@ -47,10 +47,8 @@ export default function GestionMadres() {
     const MadreGuardar = () => {
         setSubmitted(true);
 
-
-
         var data = {
-            'id_Madre': null,
+            'idMadre': null,
             'nroMadre': nroMadre,
             'trazabilidad': trazabilidad,
         }
@@ -79,7 +77,7 @@ export default function GestionMadres() {
                 _madres.push(_madre);
                 setMadres(_madres);     
         setMadreDialog(false);
-
+        limpiarMadre();
         }
 
     }
@@ -122,13 +120,13 @@ export default function GestionMadres() {
     }
 
     const MadreDelete = () => {
-        fetch("http://localhost:8080/madre/eliminar/" + selectedMadres.id_madre)
+        fetch("http://localhost:8080/madre/eliminar/" + selectedMadres.idMadre)
             .then(
                 toast.current.show({ severity: 'success', summary: 'Accion exitosa!', detail: 'Madre Eliminado', life: 3000 })
 
 
             );
-        let _madres = madres.filter(val => val.id_madre !== selectedMadres.id_madre);
+        let _madres = madres.filter(val => val.idMadre !== selectedMadres.idMadre);
         setMadres(_madres);
         setDeleteMadreDialog(false);
     }
@@ -144,7 +142,7 @@ export default function GestionMadres() {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Listar Terneros" icon="pi pi-trash" className="p-button-danger" onClick={() => navigate('/Terneros')}/>
+                <Button label="Listar Terneros" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/Terneros')}/>
                 
             </React.Fragment>
         )
@@ -160,13 +158,7 @@ export default function GestionMadres() {
         )
     }
 
-    const regresarToolbar = () => {
-        return (
-            <React.Fragment>
-                <Button label="Volver" icon="pi pi-backward" className="p-button p-component p-button-raised p-button-success" onClick={() => navigate(-1)} />
-            </React.Fragment>
-        )
-    }
+    
 
     const header = (
         <div className="table-header">
@@ -179,6 +171,7 @@ export default function GestionMadres() {
     );
 
     const hideDialog = () => {
+        limpiarMadre();
         setSubmitted(false);
         setMadreDialog(false);
     }
@@ -193,7 +186,7 @@ export default function GestionMadres() {
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" onClick={() => editMadre()} />
                 <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" selection={selectedMadres} onSelectionChange={(e) => setSelectedMadres(e.value)} onClick={() => confirmDeleteMadre(rowData)} />
             </React.Fragment>
         );
@@ -232,7 +225,7 @@ export default function GestionMadres() {
             import('jspdf-autotable').then(() => {
                 const doc = new jsPDF.default(0, 0);
                 doc.autoTable(exportColumns, madres);
-                doc.save('Usuarios.pdf');
+                doc.save('Madres.pdf');
             })
         })
     }
@@ -262,6 +255,26 @@ export default function GestionMadres() {
     }
 
 
+    const editMadre = () => {
+        if (selectedMadres !== null) {
+            setMadreDialog(true);
+            setIdMadre(selectedMadres.id_madre);
+            setNroMadre(selectedMadres.nroMadre);
+            setTrazabilidad(selectedMadres.trazabilidad);
+
+
+        }
+
+        
+    }
+
+    const limpiarMadre = () => {
+
+        setIdMadre(null);
+        setNroMadre('');
+        setTrazabilidad('');
+
+    }
 
 
     return (
@@ -274,27 +287,27 @@ export default function GestionMadres() {
             <Toast ref={toast} />
             <div className="card">
             <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-                            <DataTable value={madres} responsiveLayout="scroll" selection={selectedMadres} onSelectionChange={(e) => setSelectedMadres(e.value)} dataKey="id_madre" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                            <DataTable value={madres} responsiveLayout="scroll" selection={selectedMadres} onSelectionChange={(e) => setSelectedMadres(e.value)} dataKey="idMadre" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} madres" filters={filters1} globalFilterFields={['tipoMadre', 'trazabilidad', 'gastoAlimento', 'contra', 'acceso', 'gastoMedicamento', 'cantTerneros']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="nroMadre" header="NUMERO DE MADRE"></Column>
                     <Column field="trazabilidad" header="TRAZABILIDAD"></Column>
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
-                <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
+                <Toolbar className="p-toolbar p-component mb-4" ></Toolbar>
             </div>
 
-            <Dialog visible={productDialog} style={{ width: '450px' }} header="Datos Madre" modal className="p-fluid" footer={madreDialogFooter} onHide={hideDialog}>
+            <Dialog visible={madreDialog} style={{ width: '450px' }} header="Datos Madre" modal className="p-fluid" footer={madreDialogFooter} onHide={hideDialog}>
 
                 <div className="field">
                     <label htmlFor="nroMadre">Numero Madre</label>
-                    <InputText id="nroMadre" onChange={(e) => setNroMadre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nroMadre })} />
+                    <InputText value={nroMadre} id="nroMadre" onChange={(e) => setNroMadre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nroMadre })} />
                     {submitted && !nroMadre && <small className="p-error">Ingresar Nro Madre</small>}
                 </div>
                 
                 <div className="field">
                     <label htmlFor="trazabilidad">Trazabilidad</label>
-                    <InputText id="trazabilidad" onChange={(e) => setTrazabilidad(e.target.value)} required className={classNames({ 'p-invalid': submitted && !trazabilidad })} />
+                    <InputText value={trazabilidad} id="trazabilidad" onChange={(e) => setTrazabilidad(e.target.value)} required className={classNames({ 'p-invalid': submitted && !trazabilidad })} />
                     {submitted && !trazabilidad && <small className="p-error">Ingresar Trazabilidad</small>}
                 </div>
 
@@ -303,7 +316,7 @@ export default function GestionMadres() {
             <Dialog visible={deleteMadreDialog} style={{ width: '450px' }} header="Confirmar Acción" modal footer={deleteMadreDialogFooter} onHide={hideDeleteMadreDialog}>
                 <div className="confirmation-content">
                     <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {selectedMadres && <span>Seguro desea eliminar la madre: <b>{selectedMadres.id_madre}</b> ?</span>}
+                    {selectedMadres && <span>Seguro desea eliminar la madre: <b>{selectedMadres.idMadre}</b> ?</span>}
                 </div>
             </Dialog>
 

@@ -48,7 +48,7 @@ export default function GestionUsuarios() {
 
 
         var data = {
-            'id_usuario': null,
+            'id_usuario': idUsuario,
             'nombre': nombre,
             'apellido': apellido,
             'cedula': cedula,
@@ -57,6 +57,7 @@ export default function GestionUsuarios() {
             'contra': contra,
             'acceso': acceso,
         }
+        
 
         let _usuarios = [...usuarios];
         let _usuario = { ...data };
@@ -87,11 +88,13 @@ export default function GestionUsuarios() {
             _usuarios.push(_usuario);
             setUsuarios(_usuarios);
             setUsuarioDialog(false);
-
+            limpiarUsuario();
+            UsuarioGuardar();
         }
 
     }
 
+    const [idUsuario, setIdUsuario] = useState(null)
     const [nombre, setNombre] = useState('')
     const [apellido, setApellido] = useState('')
     const [cedula, setCedula] = useState('')
@@ -160,7 +163,7 @@ export default function GestionUsuarios() {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
+
 
             </React.Fragment>
 
@@ -169,25 +172,6 @@ export default function GestionUsuarios() {
         )
     }
 
-    const rightToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-
-                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport" src='https://i.ibb.co/9ybqLVM/pdf.png' /></Button>
-                <Button type="button" onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport" src='https://i.ibb.co/9hjyjYy/excel.png' /></Button>
-            </React.Fragment>
-        )
-    }
-
-
-
-    const regresarToolbar = () => {
-        return (
-            <React.Fragment>
-                <Button label="Volver" icon="pi pi-backward" className="p-button p-component p-button-raised p-button-success" onClick={() => navigate(-1)} />
-            </React.Fragment>
-        )
-    }
 
     const header = (
         <div className="table-header">
@@ -200,6 +184,7 @@ export default function GestionUsuarios() {
     );
 
     const hideDialog = () => {
+        limpiarUsuario();
         setSubmitted(false);
         setUsuarioDialog(false);
     }
@@ -214,7 +199,7 @@ export default function GestionUsuarios() {
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" onClick={() => editUsuario()} />
                 <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteUsuario(rowData)} />
             </React.Fragment>
         );
@@ -237,53 +222,35 @@ export default function GestionUsuarios() {
         </React.Fragment>
     );
 
+    const editUsuario = () => {
+        if (selectedUsuarios !== null) {
 
-    const cols = [
-        { field: 'cedula', header: 'Cedula' },
-        { field: 'nombre', header: 'Nombre' },
-        { field: 'apellido', header: 'Apellido' },
-        { field: 'mail', header: 'Mail' },
-        { field: 'telefono', header: 'Telefono' },
-        { field: 'acceso', header: 'Acceso' },
-        { field: 'contra', header: 'Contra' }
-    ];
-
-    const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
-
+            setIdUsuario(selectedUsuarios.id_usuario);
+            setAcceso(selectedUsuarios.acceso);
+            setApellido(selectedUsuarios.apellido);
+            setCedula(selectedUsuarios.cedula);
+            setContra(selectedUsuarios.contra);
+            setMail(selectedUsuarios.mail);
+            setNombre(selectedUsuarios.nombre);
+            setTelefono(selectedUsuarios.telefono);
 
 
-    const exportPdf = () => {
-        import('jspdf').then(jsPDF => {
-            import('jspdf-autotable').then(() => {
-                const doc = new jsPDF.default(0, 0);
-                doc.autoTable(exportColumns, usuarios);
-                doc.save('Usuarios.pdf');
-            })
-        })
+        }
+
+        setUsuarioDialog(true);
     }
 
+    const limpiarUsuario = () => {
 
-    const exportExcel = () => {
-        import('xlsx').then(xlsx => {
-            const worksheet = xlsx.utils.json_to_sheet(usuarios);
-            const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-            const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            saveAsExcelFile(excelBuffer, 'Usuarios');
-        });
-    }
+        setIdUsuario(null);
+        setAcceso('');
+        setApellido('');
+        setCedula('');
+        setContra('');
+        setMail('');
+        setNombre('');
+        setTelefono('');
 
-    const saveAsExcelFile = (buffer, fileName) => {
-        import('file-saver').then(module => {
-            if (module && module.default) {
-                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-                let EXCEL_EXTENSION = '.xlsx';
-                const data = new Blob([buffer], {
-                    type: EXCEL_TYPE
-                });
-
-                module.default.saveAs(data, fileName + EXCEL_EXTENSION);
-            }
-        });
     }
 
 
@@ -298,7 +265,7 @@ export default function GestionUsuarios() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>
                 <DataTable value={usuarios} reflow="true" selection={selectedUsuarios} onSelectionChange={(e) => setSelectedUsuarios(e.value)} dataKey="id_usuario" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} usuarios" filters={filters1} globalFilterFields={['nombre', 'apellido', 'cedula', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
@@ -311,44 +278,44 @@ export default function GestionUsuarios() {
                     <Column field="contra" header="CONTRA"></Column>
                     <Column body={actionBodyTemplate} exportable={false} ></Column>
                 </DataTable>
-                <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
+                <Toolbar className="p-toolbar p-component mb-4" ></Toolbar>
             </div>
 
             <Dialog visible={usuarioDialog} style={{ width: '450px' }} header="Datos Usuario" modal className="p-fluid" footer={usuarioDialogFooter} onHide={hideDialog}>
 
                 <div className="field">
                     <label htmlFor="name">Nombre</label>
-                    <InputText id="name" onChange={(e) => setNombre(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nombre })} />
+                    <InputText value={nombre} id="name" onChange={(e) => setNombre(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nombre })} />
                     {submitted && !nombre && <small className="p-error">Ingresar nombre</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="apellido">Apellido</label>
-                    <InputText id="apellido" onChange={(e) => setApellido(e.target.value)} required className={classNames({ 'p-invalid': submitted && !apellido })} />
+                    <InputText value={apellido} id="apellido" onChange={(e) => setApellido(e.target.value)} required className={classNames({ 'p-invalid': submitted && !apellido })} />
                     {submitted && !apellido && <small className="p-error">Ingresar apellido</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="cedula">Cedula</label>
-                    <InputText id="cedula" onChange={(e) => setCedula(e.target.value)} required className={classNames({ 'p-invalid': submitted && !cedula })} />
+                    <InputText value={cedula} id="cedula" onChange={(e) => setCedula(e.target.value)} required className={classNames({ 'p-invalid': submitted && !cedula })} />
                     {submitted && !cedula && <small className="p-error">Ingresar Cedula</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="mail">Mail</label>
-                    <InputText id="mail" onChange={(e) => setMail(e.target.value)} required className={classNames({ 'p-invalid': submitted && !mail })} />
+                    <InputText value={mail} id="mail" onChange={(e) => setMail(e.target.value)} required className={classNames({ 'p-invalid': submitted && !mail })} />
                     {submitted && !mail && <small className="p-error">Ingresar Mail</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="tel">Telefono</label>
-                    <InputText id="tel" onChange={(e) => setTelefono(e.target.value)} required className={classNames({ 'p-invalid': submitted && !telefono })} />
+                    <InputText value={telefono} id="tel" onChange={(e) => setTelefono(e.target.value)} required className={classNames({ 'p-invalid': submitted && !telefono })} />
                     {submitted && !telefono && <small className="p-error">Ingresar Telefono</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="acceso">Acceso</label>
-                    <InputText id="acceso" onChange={(e) => setAcceso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !acceso })} />
+                    <InputText value={acceso} id="acceso" onChange={(e) => setAcceso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !acceso })} />
                     {submitted && !acceso && <small className="p-error">Ingresar Acceso</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="contra">Contraseña</label>
-                    <InputText id="contra" onChange={(e) => setContra(e.target.value)} required className={classNames({ 'p-invalid': submitted && !contra })} />
+                    <InputText value={contra} id="contra" onChange={(e) => setContra(e.target.value)} required className={classNames({ 'p-invalid': submitted && !contra })} />
                     {submitted && !contra && <small className="p-error">Ingresar Contraseña</small>}
                 </div>
 

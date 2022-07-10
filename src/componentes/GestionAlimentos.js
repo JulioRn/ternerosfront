@@ -26,7 +26,7 @@ import ResponsiveAppBar from './ResponsiveAppBar';
 
 export default function GestionAlimentos() {
 
-    
+
 
     const navigate = useNavigate();
     const toast = useRef(null);
@@ -46,7 +46,7 @@ export default function GestionAlimentos() {
         setSubmitted(true);
 
         var data = {
-            'id': null,
+            'id': idAlimento,
             'nombre': nombre,
             'stock': stock,
             'comentario': comentario
@@ -66,17 +66,19 @@ export default function GestionAlimentos() {
             }
 
             ).then(
-                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Alimento registrado', life: 3000 })
-                    )
+                toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Alimento registrado', life: 3000 })
+            )
 
-                _alimentos.push(_alimento);
-                setAlimentos(_alimentos);     
-        setAlimentoDialog(false);
+            _alimentos.push(_alimento);
+            setAlimentos(_alimentos);
+            setAlimentoDialog(false);
+            limpiarAlimento();
 
         }
 
     }
 
+    const [idAlimento, setIdAlimento] = useState(null)
     const [nombre, setNombre] = useState('')
     const [stock, setStock] = useState('')
     const [comentario, setComentario] = useState('')
@@ -137,8 +139,6 @@ export default function GestionAlimentos() {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
-                
             </React.Fragment>
         )
     }
@@ -146,20 +146,14 @@ export default function GestionAlimentos() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                 
-                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
-                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
+
+                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport" src='https://i.ibb.co/9ybqLVM/pdf.png' /></Button>
+                <Button type="button" onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport" src='https://i.ibb.co/9hjyjYy/excel.png' /></Button>
             </React.Fragment>
         )
     }
 
-    const regresarToolbar = () => {
-        return (
-            <React.Fragment>
-                <Button label="Volver" icon="pi pi-backward" className="p-button p-component p-button-raised p-button-success" onClick={() => navigate(-1)} />
-            </React.Fragment>
-        )
-    }
+
 
     const header = (
         <div className="table-header">
@@ -172,6 +166,7 @@ export default function GestionAlimentos() {
     );
 
     const hideDialog = () => {
+        limpiarAlimento();
         setSubmitted(false);
         setAlimentoDialog(false);
     }
@@ -186,7 +181,7 @@ export default function GestionAlimentos() {
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" onClick={() => editAlimento()} />
                 <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteAlimento(rowData)} />
             </React.Fragment>
         );
@@ -213,11 +208,11 @@ export default function GestionAlimentos() {
     const cols = [
         { field: 'cedula', header: 'Cedula' },
         { field: 'nombre', header: 'Nombre' },
-        {field: 'apellido', header:'APELLIDO'},
-        {field: 'mail', header:'MAIL'},
-        {field: 'telefono', header:'TELEFONO'},
-        {field: 'acceso', header:'ACCESO'},
-        {field: 'contra', header:'CONTRA'}
+        { field: 'apellido', header: 'APELLIDO' },
+        { field: 'mail', header: 'MAIL' },
+        { field: 'telefono', header: 'TELEFONO' },
+        { field: 'acceso', header: 'ACCESO' },
+        { field: 'contra', header: 'CONTRA' }
     ];
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
@@ -259,6 +254,28 @@ export default function GestionAlimentos() {
     }
 
 
+    const editAlimento = () => {
+        if (selectedAlimentos !== null) {
+
+            setIdAlimento(selectedAlimentos.id_alimento);
+            setNombre(selectedAlimentos.nombre);
+            setStock(selectedAlimentos.stock);
+            setComentario(selectedAlimentos.cometario)
+
+        }
+
+        setAlimentoDialog(true);
+    }
+
+    const limpiarAlimento = () => {
+
+        setIdAlimento(null);
+        setNombre('');
+        setStock('');
+        setComentario('')
+    }
+
+
 
 
     return (
@@ -270,37 +287,37 @@ export default function GestionAlimentos() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>                <DataTable value={alimentos} responsiveLayout="scroll" selection={selectedAlimentos} onSelectionChange={(e) => setSelectedAlimentos(e.value)} dataKey="id_alimento" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>                <DataTable value={alimentos} responsiveLayout="scroll" selection={selectedAlimentos} onSelectionChange={(e) => setSelectedAlimentos(e.value)} dataKey="id_alimento" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} alimentos" filters={filters1} globalFilterFields={['nombre', 'stock', 'comentario', 'contra', 'acceso', 'mail', 'telefono']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
-                    
+
                     <Column field="nombre" header="NOMBRE"></Column>
                     <Column field="stock" header="STOCK"></Column>
                     <Column field="comentario" header="COMENTARIO"></Column>
 
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
-                <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
+                <Toolbar className="p-toolbar p-component mb-4" ></Toolbar>
             </div>
 
             <Dialog visible={alimentoDialog} style={{ width: '450px' }} header="Datos Alimento" modal className="p-fluid" footer={alimentoDialogFooter} onHide={hideDialog}>
 
                 <div className="field">
                     <label htmlFor="name">Nombre</label>
-                    <InputText id="name" onChange={(e) => setNombre(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nombre })} />
+                    <InputText value={nombre} id="name" onChange={(e) => setNombre(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nombre })} />
                     {submitted && !nombre && <small className="p-error">Ingresar nombre</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="stock">Stock</label>
-                    <InputText id="stock" keyfilter="int" onChange={(e) => setStock(e.target.value)} required className={classNames({ 'p-invalid': submitted && !stock })} />
+                    <InputText value={stock} id="stock" keyfilter="int" onChange={(e) => setStock(e.target.value)} required className={classNames({ 'p-invalid': submitted && !stock })} />
                     {submitted && !stock && <small className="p-error">Ingresar stock</small>}
                 </div>
                 <div className="field">
                     <label htmlFor="comentario">Comentario</label>
-                    <InputText id="comentario" onChange={(e) => setComentario(e.target.value)} required className={classNames({ 'p-invalid': submitted && !comentario })} />
+                    <InputText value={comentario} id="comentario" onChange={(e) => setComentario(e.target.value)} required className={classNames({ 'p-invalid': submitted && !comentario })} />
                     {submitted && !comentario && <small className="p-error">Ingresar Comentario</small>}
                 </div>
-                
+
 
             </Dialog>
 

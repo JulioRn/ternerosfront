@@ -154,7 +154,7 @@ export default function GestionGuacheras() {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" />
+                
                 
             </React.Fragment>
         )
@@ -163,20 +163,12 @@ export default function GestionGuacheras() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                 
-                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
-                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
+                <Button label="Listar Terneros" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/TernerosG')}/>     
             </React.Fragment>
         )
     }
 
-    const regresarToolbar = () => {
-        return (
-            <React.Fragment>
-                <Button label="Volver" icon="pi pi-backward" className="p-button p-component p-button-raised p-button-success" onClick={() => navigate(-1)} />
-            </React.Fragment>
-        )
-    }
+    
 
     const header = (
         <div className="table-header">
@@ -203,7 +195,7 @@ export default function GestionGuacheras() {
     const actionBodyTemplate = (rowData) => {
         return (
             <React.Fragment>
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" onClick={() => editGuachera()} />
                 <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" selection={selectedGuacheras} onSelectionChange={(e) => setSelectedGuacheras(e.value)} onClick={() => confirmDeleteGuachera(rowData)} />
             </React.Fragment>
         );
@@ -273,6 +265,16 @@ export default function GestionGuacheras() {
     }
 
 
+    const editGuachera = () => {
+        if (selectedGuacheras !== null) {
+            
+
+        }
+
+        setGuacheraDialog(true);
+    }
+
+
 
 
     return (
@@ -293,7 +295,7 @@ export default function GestionGuacheras() {
                     <Column field="descripcion" header="DESCRIPCION"></Column>
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
-                <Toolbar className="p-toolbar p-component mb-4" left={regresarToolbar} ></Toolbar>
+                <Toolbar className="p-toolbar p-component mb-4" ></Toolbar>
             </div>
 
             <Dialog visible={productDialog} style={{ width: '450px' }} header="Datos Guachera" modal className="p-fluid" footer={guacheraDialogFooter} onHide={hideDialog}>

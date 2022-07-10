@@ -42,16 +42,13 @@ export default function SignInSide() {
                 .then(
                     (result) => {
                         setUsuario(result)
+                        navigate('MenuPrincipal')
                     }
-
-
                 )
             if (usuario === null) {
                 console.log('Usuario no existe')
-            } else {
-                console.log(usuario)
-                navigate('MenuPrincipal')
             }
+            
         }
     }
 
