@@ -65,12 +65,12 @@ export default function GestionAlimentos() {
                 body: JSON.stringify(data),
             }
 
-            ).then(
+            ).then(result => {
+                AlimentosGet();
                 toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Alimento registrado', life: 3000 })
-            )
+        })
 
-            _alimentos.push(_alimento);
-            setAlimentos(_alimentos);
+            
             setAlimentoDialog(false);
             limpiarAlimento();
 
@@ -256,15 +256,15 @@ export default function GestionAlimentos() {
 
     const editAlimento = () => {
         if (selectedAlimentos !== null) {
+            setAlimentoDialog(true);
 
             setIdAlimento(selectedAlimentos.id_alimento);
             setNombre(selectedAlimentos.nombre);
             setStock(selectedAlimentos.stock);
-            setComentario(selectedAlimentos.cometario)
+            setComentario(selectedAlimentos.comentario)
 
         }
 
-        setAlimentoDialog(true);
     }
 
     const limpiarAlimento = () => {

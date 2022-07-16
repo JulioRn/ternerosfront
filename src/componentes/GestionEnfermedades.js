@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
 import ResponsiveAppBar from './ResponsiveAppBar';
+import { InputTextarea } from 'primereact/inputtextarea';
+
 
 import './Principal.css';
 
@@ -27,7 +29,7 @@ import './Principal.css';
 
 export default function GestionEnfermedades() {
 
-    
+
 
     const navigate = useNavigate();
     const toast = useRef(null);
@@ -68,14 +70,13 @@ export default function GestionEnfermedades() {
                 body: JSON.stringify(data),
             }
 
-            ).then(
-                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Enfermedad registrada', life: 3000 })
-                    )
+            ).then(result => {
+                EnfermedadesGet();
+                toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Datos ingresados correctamente', life: 3000 })
+            })
 
-                _enfermedades.push(_enfermedad);
-                setEnfermedades(_enfermedades);     
-        setEnfermedadDialog(false);
-        limpiarEnfermedad();
+            setEnfermedadDialog(false);
+            limpiarEnfermedad();
         }
 
     }
@@ -151,8 +152,8 @@ export default function GestionEnfermedades() {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                
-                
+
+
             </React.Fragment>
         )
     }
@@ -160,12 +161,12 @@ export default function GestionEnfermedades() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="Terneros Enfermos" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/TernerosE')}/>
+                <Button label="Terneros Enfermos" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/TernerosE')} />
             </React.Fragment>
         )
     }
 
-    
+
 
     const header = (
         <div className="table-header">
@@ -246,22 +247,22 @@ export default function GestionEnfermedades() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-               <DataTable  value={enfermedades} reflow="true" selection={selectedEnfermedades} onSelectionChange={(e) => setSelectedEnfermedades(e.value)} dataKey="id_enfermedad" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                <DataTable value={enfermedades} reflow="true" selection={selectedEnfermedades} onSelectionChange={(e) => setSelectedEnfermedades(e.value)} dataKey="id_enfermedad" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} enfermedades" filters={filters1} globalFilterFields={['fechaIn', 'temRec', 'deshidratacion', 'descOcular', 'tos', 'diarrea', 'descNasal']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="nombre" header="NOMBRE"></Column>
                     <Column field="observaciones" header="OBSERVACION"></Column>
-                   
+
                     <Column body={actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                 </DataTable>
                 <Toolbar className="p-toolbar p-component mb-4" ></Toolbar>
             </div>
 
-            <Dialog visible={enfermedadDialog} style={{ width: '450px' }} header="Datos Enfermedad" modal className="p-fluid" footer={enfermedadDialogFooter} onHide={hideDialog}>
+            <Dialog visible={enfermedadDialog} style={{ width: '550px' }} header="Datos Enfermedad" modal className="p-fluid" footer={enfermedadDialogFooter} onHide={hideDialog}>
 
 
-            <div className="field">
+                <div className="field">
                     <label htmlFor="nombre">Nombre</label>
                     <InputText value={nombre} id="nombre" onChange={(e) => setNombre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nombre })} />
                     {submitted && !nombre && <small className="p-error">Ingresar Nombre</small>}
@@ -269,10 +270,10 @@ export default function GestionEnfermedades() {
 
                 <div className="field">
                     <label htmlFor="observaciones">Observacion</label>
-                    <InputText value={observaciones} id="observaciones" onChange={(e) => setObservaciones(e.target.value)} required className={classNames({ 'p-invalid': submitted && !observaciones })} />
-                    {submitted && !observaciones && <small className="p-error">Ingresar Observacion</small>}
+                    <InputTextarea value={observaciones} id="observaciones" onChange={(e) => setObservaciones(e.target.value)} />
+
                 </div>
-                
+
 
             </Dialog>
 

@@ -20,8 +20,6 @@ import { useNavigate } from "react-router-dom";
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { classNames } from 'primereact/utils';
 import ResponsiveAppBar from './ResponsiveAppBar';
-import { MultiSelect } from 'primereact/multiselect';
-import { RadioButton } from 'primereact/radiobutton';
 import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 
@@ -42,23 +40,30 @@ export default function GestionTerneros() {
     const [selectedTerneros, setSelectedTerneros] = useState(null);
 
     const [terneroDialog, setTerneroDialog] = useState(false);
-    const [partoDialog, setPartoDialog] = useState(false);
     const [muerteDialog, setMuerteDialog] = useState(false);
     const [refraDialog, setRefraDialog] = useState(false);
 
     const [muertes, setMuertes] = useState([]);
-    const [partos, setPartos] = useState([]);
     const [terneros, setTerneros] = useState([]);
     const [enfermedades, setEnfermedades] = useState([]);
     const [refractrometrias, setRefractrometrias] = useState([]);
     const [disa, setDisa] = useState(false);
 
     const [madres, setMadres] = useState([]);
-    const [selectMadre, setSelectMadre] = useState([]);
+    const [selectMadre, setSelectMadre] = useState("Seleccionar Madre");
     const [madreDialog, setMadreDialog] = useState(false);
 
     const [guacheras, setGuacheras] = useState([]);
-    const [selectGuachera, setSelectGuachera] = useState([]);
+    const [selectGuachera, setSelectGuachera] = useState("Seleccionar Guachera");
+
+    const [selectEnfermedad, setSelectEnfermedad] = useState("Seleccionar Enfermedad");
+
+    const [selectSexo, setSelectSexo] = useState("Seleccionar Sexo");
+
+    const [selectParto, setSelectParto] = useState("Seleccionar Tipo");
+
+
+
 
 
 
@@ -89,9 +94,13 @@ export default function GestionTerneros() {
             'fechaDes': selectedTerneros.fechaDes,
             'pesoDes': selectedTerneros.pesoDes,
             'altura': selectedTerneros.altura,
-            'parto': selectedTerneros.parto,
+            'tipoPar': selectedTerneros.tipoPar,
             'enfermedad': selectedTerneros.enfermedad,
-            'salud': 'https://i.ibb.co/sC2PpWJ/3.png',
+            'trazabilidad': selectedTerneros.trazabilidad,
+            'madre': selectedTerneros.madre,
+            'sexo': selectedTerneros.sexo,
+            'guachera': guachera,
+            'salud': 'https://i.ibb.co/tDxjrZ8/3.png',
             'muerte': muertes[muertes.length - 1],
         }
 
@@ -106,22 +115,13 @@ export default function GestionTerneros() {
 
         }
 
-        )
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    alert(result['message'])
-                    if (result['status'] === 'ok') {
-                    }
-                }
-
-            ).then(
-                toast.current.show({ severity: 'success', summary: 'Baja Realizada!', detail: 'El ternero ha muerto!', life: 3000 })
-            )
-        setTerneros(_terneros);
+        ).then((result) => {
+            TernerosGet();
+            toast.current.show({ severity: 'success', summary: 'Baja Realizada!', detail: 'El ternero ha muerto!', life: 3000 })
+        })
         setBajaTerneroDialog(false);
         console.log(data);
-
+        limpiarTernero();
 
 
     }
@@ -136,14 +136,14 @@ export default function GestionTerneros() {
 
         const fechaNacC = moment(fechaNac).format('DD/MM/yyyy');
         const fechaDesC = moment(fechaDes).format('DD/MM/yyyy');
-        
 
-        if (selectedEnfermedad[0] !== null) {
-            salud2 = 'https://i.ibb.co/2t2dPKp/2.png'
+
+        if (enfermedad !== null) {
+            salud2 = 'https://i.ibb.co/2MCSfRw/2.png'
         }
 
-        if (selectedEnfermedad.length === 0) {
-            salud2 = 'https://i.ibb.co/NC0Km72/1.png'
+        if (enfermedad === null) {
+            salud2 = 'https://i.ibb.co/5r3qw3Y/1.png'
         }
 
         if (fechaNac === '') {
@@ -159,43 +159,28 @@ export default function GestionTerneros() {
             fechaD = fechaDesC
         }
 
-        
+
+
+
 
 
         var data = {
             'id': idTernero,
             'nroTernero': nroTernero,
             'fechaNac': fechaN,
-            'peso': peso,
-            'fechaDes': fechaD,
-            'pesoDes': pesoDes,
-            'altura': altura,
-            'enfermedad': selectedEnfermedad[0],
-            'salud': salud2,
-            'parto': parto,
-            'trazabilidad': trazabilidad,
-            'sexo': sexo,
-            'madre': madre,
             'guachera': guachera,
-        }
-        var data2 = {
-            'id': idTernero,
-            'nroTernero': nroTernero,
-            'fechaNac': fechaN,
             'peso': peso,
+            'enfermedad': enfermedad,
             'fechaDes': fechaD,
             'pesoDes': pesoDes,
             'altura': altura,
-            'enfermedad': selectedEnfermedad[0],
             'salud': salud2,
-            'parto': parto,
-            'trazabilidad': trazabilidad,
             'sexo': sexo,
-            'madre': selectMadre[0],
-            'guachera': selectGuachera[0],
+            'tipoPar': tipoPar,
+            'trazabilidad': trazabilidad,
+            'madre': madre,
+
         }
-        let _terneros = [...terneros];
-        let _ternero = { ...data2 };
 
         if (nroTernero === '') {
             console.log("No se ingreso NroTernero");
@@ -217,80 +202,15 @@ export default function GestionTerneros() {
             }
 
             ).then(result => {
-                console.log(result);
-
+                TernerosGet();
                 toast.current.show({ severity: 'success', summary: 'Acción exitosa!', detail: 'Datos del Ternero registrados', life: 3000 })
             })
 
-            _terneros.push(_ternero);
-            setTerneros(_terneros);
             setTerneroDialog(false);
             console.log(data);
-            console.log(partos)
+            limpiarTernero();
 
         }
-
-    }
-
-    const PartoGuardar = () => {
-        setSubmitted(true);
-
-        var data = {
-            'id_parto': null,
-            'tipoPar': tipoPar,
-            'retencionPla': retencionPla,
-
-        }
-        var data2 = {
-            'id_parto': null,
-            'tipoPar': tipoPar,
-            'retencionPla': retencionPla,
-        }
-        let _partos = [...partos];
-        let _parto = { ...data2 };
-
-        if (tipoPar === '') {
-            console.log("Error");
-        } else {
-            fetch("http://localhost:8080/parto/agregar", {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/form-data',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-
-            }
-
-            )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        alert(result['message'])
-                        if (result['status'] === 'ok') {
-                            toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Ternero registrado', life: 3000 })
-                        }
-                    }
-
-                )
-
-
-
-            _partos.push(_parto);
-            setPartos(_partos);
-            setPartoDialog(false);
-            console.log(data);
-            setTerneroDialog(true);
-            console.log(partos);
-            PartosGet();
-        } fetch("http://localhost:8080/parto/getAll")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setPartos(result)
-                }
-            )
-
 
     }
 
@@ -305,10 +225,9 @@ export default function GestionTerneros() {
             'comentario': comentario,
 
         }
-        let _muertes = [...muertes];
 
         if (causa === '') {
-            console.log("Error");
+            console.log("Ingresar Causa");
         } else {
             fetch("http://localhost:8080/muerte/agregar", {
                 method: 'POST',
@@ -318,21 +237,11 @@ export default function GestionTerneros() {
                 },
                 body: JSON.stringify(data),
             }
+            ).then((result) => {
+                TernerosGet();
+            }
+
             )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        alert(result['message'])
-                        if (result['status'] === 'ok') {
-                            toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Ternero registrado', life: 3000 })
-                        }
-                    }
-
-                )
-
-            setMuertes(_muertes);
-            setMuerteDialog(false);
-            console.log(data);
             setBajaTerneroDialog(true);
             MuertesGet();
         }
@@ -447,22 +356,19 @@ export default function GestionTerneros() {
     const [fechaNac, setFechaNac] = useState('')
     const [fechaDes, setFechaDes] = useState('')
     const [peso, setPeso] = useState('')
-    const [parto, setParto] = useState(null)
+    const [tipoPar, setTipoPar] = useState(null)
     const [pesoDes, setPesoDes] = useState('')
     const [altura, setAltura] = useState('')
     const [trazabilidad, setTrazabilidad] = useState('')
     const [madre, setMadre] = useState(null)
+    const [enfermedad, setEnfermedad] = useState(null)
+
 
 
     //DATOS FILTROS
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
-
-
-    //DATOS PARTO
-    const [tipoPar, setTipoPar] = useState('')
-    const [retencionPla, setRetencionPla] = useState('')
 
 
     //DATOS MUERTE
@@ -477,7 +383,7 @@ export default function GestionTerneros() {
     const [evento, setEvento] = useState('')
 
     //DATOS GUACHERA
-    const[guachera, setGuachera] = useState('')
+    const [guachera, setGuachera] = useState(null)
 
     const fechaMuerteC = moment(fechaMuerte).format('DD/MM/yyyy');
     const fechaRefraC = moment(fechaRefra).format('DD/MM/yyyy');
@@ -505,13 +411,19 @@ export default function GestionTerneros() {
         { label: 'HEMBRA', value: 'HEMBRA' },
     ];
 
+    const tiposPartos = [
+        { label: 'NORMAL', value: 'NORMAL' },
+        { label: 'ASISTIDO', value: 'ASISTIDO' },
+        { label: 'ABORTO', value: 'ABORTO' },
+    ];
+
     const initFilters1 = () => {
         setFilters1({
             'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
             'nroTernero': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'fechaNac': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'tiempo': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-            'parto': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+            'tipoPar': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
             'cantCal': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
             'peso': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
         });
@@ -558,16 +470,6 @@ export default function GestionTerneros() {
             )
     }
 
-    const PartosGet = () => {
-        fetch("http://localhost:8080/parto/getAll")
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    setPartos(result)
-                }
-            )
-    }
-
     const RefractrometriasGet = () => {
         fetch("http://localhost:8080/refractrometria/getAll")
             .then(res => res.json())
@@ -598,6 +500,13 @@ export default function GestionTerneros() {
             )
     }
 
+    const eliminarEnf = () => {
+        if (selectedTerneros.enfermedad !== null) {
+            setSelectEnfermedad("Seleccionar Enfermedad")
+            setEnfermedad(null)
+        }
+    }
+
 
     const TerneroDelete = () => {
         fetch("http://localhost:8080/ternero/eliminar/" + selectedTerneros.id)
@@ -614,27 +523,17 @@ export default function GestionTerneros() {
 
 
     const imageBodyTemplate = (rowData) => {
-        return <img src={`${rowData.salud}`} onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} alt={rowData.image} className="product-image" style={{ width: '70px' }} />
+        return <img src={`${rowData.salud}`} onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} alt={rowData.image} className="product-image" style={{ width: '170px' }} />
     }
 
 
 
     const openNew = () => {
         setSubmitted(false);
-        setRegistrarPDialog(false);
         setTerneroDialog(true);
     }
 
-    const openDialogParto = () => {
-        setSubmitted(false);
-        setRegistrarPDialog(true);
-    }
 
-    const openNewParto = () => {
-        setSubmitted(false);
-        setRegistrarPDialog(false);
-        setPartoDialog(true);
-    }
 
     const [labelTe, setLabelTe] = useState('')
     const [labelFTe, setFLabelTe] = useState('')
@@ -670,7 +569,7 @@ export default function GestionTerneros() {
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openDialogParto} />
+                <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
 
             </React.Fragment>
         )
@@ -692,7 +591,7 @@ export default function GestionTerneros() {
                 <span className="p-buttonset" style={{ marginLeft: '1em' }}>
 
                     <Button label="Refractrometría" icon="pi pi-check" className="p-button p-component p-button-raised p-button-secundary" onClick={openNewRefra} />
-                    <Button label="Eliminar Registro" icon="pi pi-trash" className="p-button p-component p-button-raised p-button-danger" onClick={() => confirmDeleteTernero(rowData)}/>
+                    <Button label="Eliminar Registro" icon="pi pi-trash" className="p-button p-component p-button-raised p-button-danger" onClick={() => confirmDeleteTernero(rowData)} />
                 </span>
             </React.Fragment>
         )
@@ -713,8 +612,6 @@ export default function GestionTerneros() {
         setSelectedTerneros([]);
         setSubmitted(false);
         setTerneroDialog(false);
-        setPartoDialog(false);
-        setRegistrarPDialog(false);
         setMuerteDialog(false);
         setRefraDialog(false);
     }
@@ -723,13 +620,6 @@ export default function GestionTerneros() {
         <React.Fragment>
             <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={TerneroGuardar} />
-        </React.Fragment>
-    );
-
-    const partoDialogFooter = (
-        <React.Fragment>
-            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={PartoGuardar} />
         </React.Fragment>
     );
 
@@ -757,7 +647,6 @@ export default function GestionTerneros() {
     }
 
     const [deleteTerneroDialog, setDeleteTerneroDialog] = useState(false);
-    const [registrarPDialog, setRegistrarPDialog] = useState(false);
     const [bajaTerneroDialog, setBajaTerneroDialog] = useState(false);
 
     const hideDeleteTerneroDialog = () => {
@@ -772,30 +661,45 @@ export default function GestionTerneros() {
         setDeleteTerneroDialog(true);
     }
 
+
+
     const editTernero = () => {
         if (selectedTerneros !== null) {
 
             setTerneroDialog(true);
             moment.defaultFormat = "DD.MM.YYYY HH:mm";
-            
+
             if (selectedTerneros.enfermedad !== null) {
-                setDescEnfe(selectedTerneros.enfermedad.observaciones)
+                setDescEnfe(selectedTerneros.enfermedad.observaciones);
+                setEnfermedad(selectedTerneros.enfermedad)
+                setSelectEnfermedad(selectedTerneros.enfermedad.nombre)
+            } else if (selectedTerneros.enfermedad === '') {
+                setEnfermedad(null)
             }
+
+
+            setTrazabilidad(selectedTerneros.trazabilidad)
             setDisa(true);
             setIdTernero(selectedTerneros.id)
             setAltura(selectedTerneros.altura)
             setSexo(selectedTerneros.sexo)
+
+            if (selectedTerneros.guachera !== null) {
+                setGuachera(selectedTerneros.guachera)
+                setSelectGuachera(selectedTerneros.guachera.nroGuachera)
+            } if (selectedTerneros.gauchera === '') {
+                setGuachera(null)
+            }
+
+
             setNroTernero(selectedTerneros.nroTernero)
             setPeso(selectedTerneros.peso)
             setFechaNac(moment(selectedTerneros.fechaNac, moment.defaultFormat).toDate())
             setPesoDes(selectedTerneros.pesoDes)
-            if (selectedTerneros.parto !== null) {
-                setParto(selectedTerneros.parto)
-            } if (selectedTerneros.parto === '') {
-                setParto(null)
-            }
+            setTipoPar(selectedTerneros.tipoPar)
             if (selectedTerneros.madre !== null) {
                 setMadre(selectedTerneros.madre)
+                setSelectMadre(selectedTerneros.madre.nroMadre)
             } if (selectedTerneros.madre === '') {
                 setMadre(null)
             }
@@ -811,8 +715,15 @@ export default function GestionTerneros() {
                 setComentario(selectedTerneros.muerte.comentario)
             }
 
-            console.log(selectedTerneros.fechaNac)
-            console.log(parto)
+            if (selectedTerneros.tipoPar !== null) {
+                setSelectParto(selectedTerneros.tipoPar)
+            }
+
+            if (selectedTerneros.sexo !== null) {
+                setSexo(selectedTerneros.sexo)
+            }
+
+
         }
     }
 
@@ -826,6 +737,14 @@ export default function GestionTerneros() {
         setFechaDes('');
         setPesoDes('');
         setDescEnfe('');
+        setTrazabilidad('');
+        setCausa('');
+        setComentario('');
+        setSelectMadre("Seleccionar Madre");
+        setSelectGuachera("Seleccionar Guachera");
+        setSelectedEnfermedad("Seleccionar Enfermedad");
+        setSelectSexo("Seleccionar Sexo");
+        setSelectParto("Seleccionar Tipo");
     }
 
     const deleteTerneroDialogFooter = (
@@ -842,12 +761,6 @@ export default function GestionTerneros() {
         </React.Fragment>
     );
 
-    const registarPDialogFooter = (
-        <React.Fragment>
-            <Button label="No" icon="pi pi-times" className="p-button-text" onClick={openNew} />
-            <Button label="Sí" icon="pi pi-check" className="p-button-text" onClick={openNewParto} />
-        </React.Fragment>
-    );
 
     const madreDialogFooter = (
         <React.Fragment>
@@ -865,7 +778,7 @@ export default function GestionTerneros() {
         { field: 'pesoDes', header: 'Peso Des.' },
         { field: 'altura', header: 'Altura' },
         { field: 'enfermedad', header: 'Enfermedad' },
-        { field: 'parto.id_parto', header: 'Parto' },
+        { field: 'tipoPar', header: 'Parto' },
         { field: 'muerte.id_muerte', header: 'Muerte' }
     ];
 
@@ -920,15 +833,15 @@ export default function GestionTerneros() {
             <div className="card">
                 <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
                 <DataTable value={terneros} reflow="true" selection={selectedTerneros} onSelectionChange={(e) => setSelectedTerneros(e.value)} dataKey="id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
-                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} terneros" filters={filters1} globalFilterFields={['nroTernero', 'fechaNac', 'peso', 'fechaRef', 'tiempo', 'parto', 'cantCal']} header={header} >
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} terneros" filters={filters1} globalFilterFields={['nroTernero', 'fechaNac', 'peso', 'fechaRef', 'tiempo', 'tipoPar', 'cantCal']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="salud" header="SALUD" body={imageBodyTemplate}></Column>
                     <Column field="nroTernero" header="NRO TERNERO"></Column>
                     <Column field="fechaNac" header="FECHA NACIMIENTO"></Column>
                     <Column field="peso" header="PESO"></Column>
                     <Column field="altura" header="ALTURA"></Column>
-                    <Column field="parto.id_parto" header="PARTO"></Column>
-                    <Column field="parto.trazabilidad" header="TRAZABILIDAD"></Column>
+                    <Column field="tipoPar" header="PARTO"></Column>
+                    <Column field="trazabilidad" header="TRAZABILIDAD"></Column>
                     <Column field="enfermedad.nombre" header="ENFERMEDAD"></Column>
 
 
@@ -948,7 +861,7 @@ export default function GestionTerneros() {
 
                         <div className="field mb-4 col-12 md:col-6">
                             <label className="font-medium text-900" htmlFor="nroTernero">Nro Ternero</label>
-                            <InputText disabled={disa} value={nroTernero} id="nroTernero" onChange={(e) => setNroTernero(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !nroTernero })} />
+                            <InputText disabled={disa} value={nroTernero} id="nroTernero" onChange={(e) => setNroTernero(e.target.value)} keyfilter="int" required autoFocus className={classNames({ 'p-invalid': submitted && !nroTernero })} />
                             {submitted && !nroTernero && <small className="p-error">Ingresar Nro Ternero</small>}
                         </div>
 
@@ -965,7 +878,7 @@ export default function GestionTerneros() {
 
                         <div className="field mb-4 col-6 md:col-3">
                             <label className="font-medium text-900" htmlFor="peso">Peso Nacimiento</label>
-                            <InputText value={peso} keyfilter="num" id="peso" locale="es" onChange={(e) => setPeso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !peso })} />
+                            <InputText value={peso} keyfilter="num" id="peso" onChange={(e) => setPeso(e.target.value)} required className={classNames({ 'p-invalid': submitted && !peso })} />
                             {submitted && !peso && <small className="p-error">Ingresar Peso Nacimiento</small>}
                         </div>
 
@@ -977,29 +890,36 @@ export default function GestionTerneros() {
 
                         <div className="field mb-4 col-12 md:col-6">
                             <label className="font-medium text-900" htmlFor="sexo">Sexo</label>
-                            <Dropdown value={sexo} options={sexoHM} onChange={(e) => setSexo(e.value)} placeholder="Seleccionar sexo" />
+                            <Dropdown value={sexo} options={sexoHM} onChange={(e) => setSexo(e.value)} placeholder={selectSexo} />
                             {submitted && !evento && <small className="p-error">Ingresar sexo</small>}
 
                         </div>
 
-                        <div className="field mb-4 col-6 md:col-3">
+                        <div className="field mb-4 col-12 md:col-6">
+                            <label className="font-medium text-900" htmlFor="sexo">Tipo de Parto</label>
+                            <Dropdown value={tipoPar} options={tiposPartos} onChange={(e) => setTipoPar(e.value)} placeholder={selectParto} />
+                            {submitted && !evento && <small className="p-error">Ingresar sexo</small>}
+
+                        </div>
+
+                        <div className="field mb-4 col-12 md:col-6">
                             <label className="font-medium text-900" htmlFor="item">Guachera</label>
                             <div className="flex align-content-center">
-                                <Dropdown value={guachera} options={guacheras} onChange={(e) => setGuachera(e.value)} optionLabel="nroGuachera" placeholder="Seleccionar guachera" />
+                                <Dropdown value={guachera} options={guacheras} onChange={(e) => setGuachera(e.value)} optionLabel="nroGuachera" placeholder={selectGuachera} />
                                 {submitted && !evento && <small className="p-error">Ingresar Guachera</small>}
                             </div>
                         </div>
 
-                        <div className="field mb-4 col-6 md:col-3">
+                        <div className="field mb-4 col-12 md:col-6">
                             <label className="font-medium text-900" htmlFor="item">Madre</label>
                             <div className="flex align-content-center">
-                                <Dropdown value={madre} options={madres} onChange={(e) => setMadre(e.value)} optionLabel="nroMadre" placeholder="Seleccionar madre" />
+                                <Dropdown value={madre} options={madres} onChange={(e) => setMadre(e.value)} optionLabel="nroMadre" placeholder={selectMadre} />
                                 {submitted && !evento && <small className="p-error">Ingresar Madre</small>}
                                 <Button icon="pi pi-plus" className="p-button-rounded p-button-success p-button-text" aria-label="Agregar" />
                             </div>
                         </div>
 
-                        
+
 
 
 
@@ -1013,8 +933,11 @@ export default function GestionTerneros() {
 
 
                         <div className="field mb-4 col-12 md:col-6">
-                            <label className="font-medium text-900" htmlFor="altura">Enfermedad</label>
-                            <MultiSelect value={selectedEnfermedad} options={enfermedades} onChange={(e) => setSelectedEnfermedad(e.value)} optionLabel="nombre" placeholder="Seleccionar Enfermedad" maxSelectedLabels={3} />
+                            <label className="font-medium text-900" htmlFor="item">Enfermedad</label>
+                            <div className="flex align-content-center">
+                                <Dropdown value={enfermedad} options={enfermedades} onChange={(e) => setEnfermedad(e.value)} optionLabel="nombre" placeholder={selectEnfermedad} />
+                                <Button icon="pi pi-times" className="p-button-rounded p-button-success p-button-text" aria-label="Agregar" onClick={eliminarEnf} />
+                            </div>
                         </div>
 
 
@@ -1066,29 +989,6 @@ export default function GestionTerneros() {
                 </div>
 
 
-            </Dialog>
-
-            <Dialog visible={partoDialog} style={{ width: '450px' }} header="Datos Parto" modal className="p-fluid" footer={partoDialogFooter} onHide={hideDialog}>
-
-                <div className="field">
-                    <label className="font-medium text-900" >Tipo Parto</label>
-                    <div className="formgrid grid">
-                        <div className="field-radiobutton col-6">
-                            <RadioButton inputId="category1" name="tipoPar" value="Natural" onChange={(e) => setTipoPar(e.value)} checked={tipoPar === 'Natural'} />
-                            <label className="font-medium text-900" htmlFor="category1">Natural</label>
-                        </div>
-                        <div className="field-radiobutton col-6">
-                            <RadioButton inputId="category2" name="tipoPar" value="Asistido" onChange={(e) => setTipoPar(e.value)} checked={tipoPar === 'Asistido'} />
-                            <label className="font-medium text-900" htmlFor="category2">Asistido</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="field">
-                    <label className="font-medium text-900" htmlFor="retencionPla">Retención Placenta</label>
-                    <InputText id="retencionPla" onChange={(e) => setRetencionPla(e.target.value)} required autoFocus className={classNames({ 'p-invalid': submitted && !retencionPla })} />
-                    {submitted && !retencionPla && <small className="p-error">Ingresar Retención</small>}
-                </div>
             </Dialog>
 
 
@@ -1168,12 +1068,6 @@ export default function GestionTerneros() {
                 </div>
             </Dialog>
 
-            <Dialog visible={registrarPDialog} style={{ width: '450px' }} header="Registrar Parto" modal footer={registarPDialogFooter} onHide={hideDialog}>
-                <div className="confirmation-content">
-                    <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                    {<span>Es necesario registrar Parto para este nuevo Ternero</span>}
-                </div>
-            </Dialog>
 
             <Dialog visible={bajaTerneroDialog} style={{ width: '450px' }} header="Confirmar Muerte" modal footer={bajaTerneroDialogFooter} onHide={hideBajaTerneroDialog}>
                 <div className="confirmation-content">

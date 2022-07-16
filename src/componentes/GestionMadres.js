@@ -28,7 +28,7 @@ import { Dropdown } from 'primereact/dropdown';
 
 export default function GestionMadres() {
 
-    
+
 
     const navigate = useNavigate();
     const toast = useRef(null);
@@ -48,12 +48,11 @@ export default function GestionMadres() {
         setSubmitted(true);
 
         var data = {
-            'idMadre': null,
+            'idMadre': idMadre,
             'nroMadre': nroMadre,
             'trazabilidad': trazabilidad,
         }
-        let _madres = [...madres];
-        let _madre = { ...data };
+
 
         if (nroMadre === '') {
             console.log("No se ingreso NroMadre");
@@ -70,14 +69,12 @@ export default function GestionMadres() {
                 body: JSON.stringify(data),
             }
 
-            ).then(
-                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Madre registrada', life: 3000 })
-                    )
-
-                _madres.push(_madre);
-                setMadres(_madres);     
-        setMadreDialog(false);
-        limpiarMadre();
+            ).then(result => {
+                MadresGet();
+                toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Madre registrada', life: 3000 })
+            })
+            setMadreDialog(false);
+            limpiarMadre();
         }
 
     }
@@ -142,8 +139,8 @@ export default function GestionMadres() {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                <Button label="Listar Terneros" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/Terneros')}/>
-                
+                <Button label="Listar Terneros" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/Terneros')} />
+
             </React.Fragment>
         )
     }
@@ -151,14 +148,14 @@ export default function GestionMadres() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                 
-                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9ybqLVM/pdf.png'/></Button>
-                <Button type="button"  onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport"  src='https://i.ibb.co/9hjyjYy/excel.png'/></Button>
+
+                <Button type="button" onClick={exportPdf} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport" src='https://i.ibb.co/9ybqLVM/pdf.png' /></Button>
+                <Button type="button" onClick={exportExcel} className="p-button-rounded p-button-text" data-pr-tooltip="PDF"><img alt="alt" id="imgExport" src='https://i.ibb.co/9hjyjYy/excel.png' /></Button>
             </React.Fragment>
         )
     }
 
-    
+
 
     const header = (
         <div className="table-header">
@@ -213,7 +210,7 @@ export default function GestionMadres() {
     const cols = [
         { field: 'idMadre', header: 'ID MADRE' },
         { field: 'nroMadre', header: 'NUMERO MADRE' },
-        {field: 'trazabilidad', header:'TRAZABILIDAD'},
+        { field: 'trazabilidad', header: 'TRAZABILIDAD' },
     ];
 
     const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
@@ -258,14 +255,14 @@ export default function GestionMadres() {
     const editMadre = () => {
         if (selectedMadres !== null) {
             setMadreDialog(true);
-            setIdMadre(selectedMadres.id_madre);
+            setIdMadre(selectedMadres.idMadre);
             setNroMadre(selectedMadres.nroMadre);
             setTrazabilidad(selectedMadres.trazabilidad);
 
 
         }
 
-        
+
     }
 
     const limpiarMadre = () => {
@@ -286,8 +283,8 @@ export default function GestionMadres() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-                            <DataTable value={madres} responsiveLayout="scroll" selection={selectedMadres} onSelectionChange={(e) => setSelectedMadres(e.value)} dataKey="idMadre" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                <DataTable value={madres} responsiveLayout="scroll" selection={selectedMadres} onSelectionChange={(e) => setSelectedMadres(e.value)} dataKey="idMadre" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} madres" filters={filters1} globalFilterFields={['tipoMadre', 'trazabilidad', 'gastoAlimento', 'contra', 'acceso', 'gastoMedicamento', 'cantTerneros']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="nroMadre" header="NUMERO DE MADRE"></Column>
@@ -301,13 +298,13 @@ export default function GestionMadres() {
 
                 <div className="field">
                     <label htmlFor="nroMadre">Numero Madre</label>
-                    <InputText value={nroMadre} id="nroMadre" onChange={(e) => setNroMadre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nroMadre })} />
+                    <InputText value={nroMadre} keyfilter="num" id="nroMadre" onChange={(e) => setNroMadre(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nroMadre })} />
                     {submitted && !nroMadre && <small className="p-error">Ingresar Nro Madre</small>}
                 </div>
-                
+
                 <div className="field">
                     <label htmlFor="trazabilidad">Trazabilidad</label>
-                    <InputText value={trazabilidad} id="trazabilidad" onChange={(e) => setTrazabilidad(e.target.value)} required className={classNames({ 'p-invalid': submitted && !trazabilidad })} />
+                    <InputText value={trazabilidad} keyfilter="num" id="trazabilidad" onChange={(e) => setTrazabilidad(e.target.value)} required className={classNames({ 'p-invalid': submitted && !trazabilidad })} />
                     {submitted && !trazabilidad && <small className="p-error">Ingresar Trazabilidad</small>}
                 </div>
 

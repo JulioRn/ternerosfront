@@ -28,7 +28,7 @@ import { Dropdown } from 'primereact/dropdown';
 
 export default function GestionGuacheras() {
 
-    
+
 
     const navigate = useNavigate();
     const toast = useRef(null);
@@ -50,7 +50,7 @@ export default function GestionGuacheras() {
 
 
         var data = {
-            'id_Guachera': null,
+            'id_guachera': idGuachera,
             'nroGuachera': nroGuachera,
             'tipoGuachera': tipoGuachera,
             'descripcion': descripcion,
@@ -58,13 +58,9 @@ export default function GestionGuacheras() {
         let _guacheras = [...guacheras];
         let _guachera = { ...data };
 
-        if (tipoGuachera === '') {
-            console.log("errorrrr");
-            console.log(data);
-            console.log(tipoGuachera)
+        if (nroGuachera === '') {
+            console.log("Se debe ingresar numero de guachera");
         } else {
-            console.log("nose")
-            console.log(tipoGuachera)
             fetch("http://localhost:8080/guachera/agregar", {
                 method: 'POST',
                 headers: {
@@ -74,18 +70,18 @@ export default function GestionGuacheras() {
                 body: JSON.stringify(data),
             }
 
-            ).then(
-                    toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Guachera registrada', life: 3000 })
-                    )
-
-                _guacheras.push(_guachera);
-                setGuacheras(_guacheras);     
-        setGuacheraDialog(false);
-
+            ).then(result => {
+                GuacherasGet();
+                toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Guachera registrada', life: 3000 })
+        })
+        console.log(data)
+            setGuacheraDialog(false);
+            limpiarGuachera();
         }
 
     }
 
+    const [idGuachera, setIdGuachera] = useState('')
     const [nroGuachera, setNroGuachera] = useState('')
     const [tipoGuachera, setTipoGuachera] = useState('')
     const [descripcion, setDescripcion] = useState('')
@@ -93,11 +89,13 @@ export default function GestionGuacheras() {
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
+    const [selectGuachera, setSelectGuachera] = useState("Seleccionar Tipo")
+
 
     const tipos = [
-        {label: 'Individual', value: 'Individual'},
-    {label: 'Colectiva', value: 'Colectiva'},
-       ];
+        { label: 'Individual', value: 'Individual' },
+        { label: 'Colectiva', value: 'Colectiva' },
+    ];
 
 
     const initFilters1 = () => {
@@ -154,8 +152,8 @@ export default function GestionGuacheras() {
         return (
             <React.Fragment>
                 <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                
-                
+
+
             </React.Fragment>
         )
     }
@@ -163,12 +161,12 @@ export default function GestionGuacheras() {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button label="Listar Terneros" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/TernerosG')}/>     
+                <Button label="Listar Terneros" icon="pi pi-list" className="p-button-secondary" onClick={() => navigate('/TernerosG')} />
             </React.Fragment>
         )
     }
 
-    
+
 
     const header = (
         <div className="table-header">
@@ -183,6 +181,7 @@ export default function GestionGuacheras() {
     const hideDialog = () => {
         setSubmitted(false);
         setGuacheraDialog(false);
+        limpiarGuachera();
     }
 
     const guacheraDialogFooter = (
@@ -196,7 +195,7 @@ export default function GestionGuacheras() {
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-warning" onClick={() => editGuachera()} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" selection={selectedGuacheras} onSelectionChange={(e) => setSelectedGuacheras(e.value)} onClick={() => confirmDeleteGuachera(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => confirmDeleteGuachera(rowData)} />
             </React.Fragment>
         );
     }
@@ -219,62 +218,31 @@ export default function GestionGuacheras() {
     );
 
 
-    const cols = [
-        { field: 'id_guachera', header: 'ID' },
-        { field: 'nroGuachera', header: 'NUMERO GUACHERA' },
-        {field: 'tipoGuachera', header:'TIPO'},
-        {field: 'descripcion', header:'DESCRIPCION'},
-    ];
-
-    const exportColumns = cols.map(col => ({ title: col.header, dataKey: col.field }));
-
-
-
-    const exportPdf = () => {
-        import('jspdf').then(jsPDF => {
-            import('jspdf-autotable').then(() => {
-                const doc = new jsPDF.default(0, 0);
-                doc.autoTable(exportColumns, guacheras);
-                doc.save('Guacheras.pdf');
-            })
-        })
-    }
-
-
-    const exportExcel = () => {
-        import('xlsx').then(xlsx => {
-            const worksheet = xlsx.utils.json_to_sheet(guacheras);
-            const workbook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
-            const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'array' });
-            saveAsExcelFile(excelBuffer, 'Guacheras');
-        });
-    }
-
-    const saveAsExcelFile = (buffer, fileName) => {
-        import('file-saver').then(module => {
-            if (module && module.default) {
-                let EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-                let EXCEL_EXTENSION = '.xlsx';
-                const data = new Blob([buffer], {
-                    type: EXCEL_TYPE
-                });
-
-                module.default.saveAs(data, fileName + EXCEL_EXTENSION);
-            }
-        });
-    }
-
-
     const editGuachera = () => {
         if (selectedGuacheras !== null) {
-            
+            setGuacheraDialog(true);
+
+            setIdGuachera(selectedGuacheras.id_guachera)
+            setNroGuachera(selectedGuacheras.nroGuachera)
+            setTipoGuachera(selectedGuacheras.tipoGuachera)
+            setDescripcion(selectedGuacheras.descripcion)
+
+            if(selectedGuacheras.tipoGuachera !== null){
+                setSelectGuachera(selectedGuacheras.tipoGuachera)
+            }
+
 
         }
 
-        setGuacheraDialog(true);
     }
+    const limpiarGuachera = () => {
 
-
+        setIdGuachera('')
+            setNroGuachera('')
+            setTipoGuachera('')
+            setDescripcion('')
+            setSelectGuachera("Seleccionar Tipo")
+    }
 
 
     return (
@@ -286,8 +254,8 @@ export default function GestionGuacheras() {
             <br />
             <Toast ref={toast} />
             <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-                            <DataTable value={guacheras} responsiveLayout="scroll" selection={selectedGuacheras} onSelectionChange={(e) => setSelectedGuacheras(e.value)} dataKey="id_guachera" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                <DataTable value={guacheras} responsiveLayout="scroll" selection={selectedGuacheras} onSelectionChange={(e) => setSelectedGuacheras(e.value)} dataKey="id_guachera" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} guacheras" filters={filters1} globalFilterFields={['tipoGuachera', 'descripcion', 'gastoAlimento', 'contra', 'acceso', 'gastoMedicamento', 'cantTerneros']} header={header} >
                     <Column selectionMode="single" headerStyle={{ width: '3rem' }} exportable={false} ></Column>
                     <Column field="nroGuachera" header="NRO DE GUACHERA"></Column>
@@ -302,21 +270,21 @@ export default function GestionGuacheras() {
 
                 <div className="field">
                     <label htmlFor="nroGuachera">Nro Guachera</label>
-                    <InputText id="nroGuachera" onChange={(e) => setNroGuachera(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nroGuachera })} />
+                    <InputText value={nroGuachera} id="nroGuachera" onChange={(e) => setNroGuachera(e.target.value)} required className={classNames({ 'p-invalid': submitted && !nroGuachera })} />
                     {submitted && !nroGuachera && <small className="p-error">Ingresar Nro Guachera</small>}
                 </div>
 
                 <div className="field">
                     <label htmlFor="tipoGuachera">Tipo de Guachera</label>
-                    <Dropdown value={tipoGuachera} options={tipos} onChange={(e) => setTipoGuachera(e.value)} placeholder="Seleccionar tipo"/>                    {submitted && !tipoGuachera && <small className="p-error">Ingresar Tipo de Guachera</small>}
+                    <Dropdown value={tipoGuachera} options={tipos} onChange={(e) => setTipoGuachera(e.value)} placeholder={selectGuachera} />                    {submitted && !tipoGuachera && <small className="p-error">Ingresar Tipo de Guachera</small>}
                 </div>
 
                 <div className="field">
                     <label htmlFor="descripcion">Descripción</label>
-                    <InputText id="descripcion" onChange={(e) => setDescripcion(e.target.value)} required className={classNames({ 'p-invalid': submitted && !descripcion })} />
+                    <InputText value={descripcion} id="descripcion" onChange={(e) => setDescripcion(e.target.value)} required className={classNames({ 'p-invalid': submitted && !descripcion })} />
                     {submitted && !descripcion && <small className="p-error">Ingresar Descripción</small>}
                 </div>
-                
+
 
             </Dialog>
 

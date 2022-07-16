@@ -59,16 +59,9 @@ export default function GestionUsuarios() {
         }
         
 
-        let _usuarios = [...usuarios];
-        let _usuario = { ...data };
-
-        if (nombre === '') {
-            console.log("errorrrr");
-            console.log(data);
-            console.log(nombre)
+        if (cedula === '') {
+            console.log("Ingresar cedula");
         } else {
-            console.log("nose")
-            console.log(nombre)
             fetch("http://localhost:8080/usuario/agregar/", {
                 method: 'POST',
                 headers: {
@@ -79,17 +72,13 @@ export default function GestionUsuarios() {
             }
 
             ).then(result => {
-                console.log(result);
-                toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Usuario registrado', life: 3000 })
+                UsuariosGet();
+                toast.current.show({ severity: 'success', summary: 'Registro exitoso!', detail: 'Datos ingresados correctamente', life: 3000 })
 
             })
-                .catch(e => console.log(e))
-
-            _usuarios.push(_usuario);
-            setUsuarios(_usuarios);
+        
             setUsuarioDialog(false);
             limpiarUsuario();
-            UsuarioGuardar();
         }
 
     }

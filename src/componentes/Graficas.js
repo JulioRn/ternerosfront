@@ -126,8 +126,10 @@ const Graficas = () => {
     let sum1 = 0;
     let sum2 = 0;
     let sum3 = 0;
-    let sum5 = 0;
-    let sum6 = 0;
+    let partosN = 0;
+    let partosA = 0;
+    let partosSR = 0;
+
 
 
     for (let i = 0; i < terneros.length; i++) {
@@ -139,23 +141,37 @@ const Graficas = () => {
 
     for (let i = 0; i < terneros.length; i++) {
 
-        sum3 += (terneros[i].parto != null);
+        sum3 += (terneros[i].tipoPar !== '');
 
     }
     let contador = 0;
 
     for (let i = 0; i < ternerosF.length; i++) {
 
-        contador += (ternerosF[i].parto !== null)
+        contador += (ternerosF[i].tipoPar !== null)
+
+    }
+
+    let contadorMuertes = 0;
+    for (let i = 0; i < terneros.length; i++) {
+
+        contadorMuertes += (terneros[i].muerte !== null);
+
+    }
+    let contadorMuertesF = 0;
+
+    for (let i = 0; i < ternerosF.length; i++) {
+
+        contadorMuertesF += (ternerosF[i].muerte !== null)
 
     }
 
 
     for (let i = 0; i < terneros.length; i++) {
-        if(terneros[i].parto !== null){
-        sum5 += (terneros[i].parto.tipoPar === 'Natural');
-        sum6 += (terneros[i].parto.tipoPar === 'Asistido');
-        }
+        partosN += (terneros[i].tipoPar.includes('NORMAL'));
+        partosA += (terneros[i].tipoPar.includes('ASISTIDO'));
+        partosSR += (terneros[i].tipoPar === '');
+        
     }
 
 
@@ -225,7 +241,7 @@ const Graficas = () => {
 
         if (terneros[i].muerte !== null) {
 
-            if (terneros[i].sexo === 'Macho') {
+            if (terneros[i].sexo === 'MACHO') {
 
 
                 sumEneroMM += (terneros[i].muerte.fecha.includes('/01/'))
@@ -241,7 +257,7 @@ const Graficas = () => {
                 sumNoviembreMM += (terneros[i].muerte.fecha.includes('/11/'))
                 sumDiciembreMM += (terneros[i].muerte.fecha.includes('/12/'))
 
-            } else if (terneros[i].sexo === 'Hembra') {
+            } else if (terneros[i].sexo === 'HEMBRA') {
 
 
                 sumEneroMH += (terneros[i].muerte.fecha.includes('/01/'))
@@ -291,9 +307,9 @@ const Graficas = () => {
 
     for (let i = 0; i < terneros.length; i++) {
 
-        if (terneros[i].parto !== null) {
+        if (terneros[i].tipoPar !== '' ) {
 
-            if (terneros[i].sexo === 'Macho') {
+            if (terneros[i].sexo === 'MACHO') {
 
                 sumPEnero += (terneros[i].fechaNac.includes('/01/'))
                 sumPFebrero += (terneros[i].fechaNac.includes('/02/'))
@@ -307,7 +323,7 @@ const Graficas = () => {
                 sumPOctubre += (terneros[i].fechaNac.includes('/10/'))
                 sumPNoviembre += (terneros[i].fechaNac.includes('/11/'))
                 sumPDiciembre += (terneros[i].fechaNac.includes('/12/'))
-            } else if (terneros[i].sexo === 'Hembra') {
+            } else if (terneros[i].sexo === 'HEMBRA') {
 
                 sumPEneroH += (terneros[i].fechaNac.includes('/01/'))
                 sumPFebreroH += (terneros[i].fechaNac.includes('/02/'))
@@ -405,7 +421,7 @@ const Graficas = () => {
         labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         datasets: [
             {
-                label: 'Machos',
+                label: 'MACHOS',
                 borderColor: '#6B8E23',
                 data: [sumPEnero, sumPFebrero, sumPMarzo, sumPAbril, sumPMayo, sumPJunio, sumPJulio, sumPAgosto, sumPSeptiembre, sumPOctubre, sumPNoviembre, sumPDiciembre],
                 tension: .4,
@@ -413,7 +429,7 @@ const Graficas = () => {
 
             },
             {
-                label: 'Hembras',
+                label: 'HEMBRAS',
                 borderColor: '#FFA500',
                 data: [sumPEneroH, sumPFebreroH, sumPMarzoH, sumPAbrilH, sumPMayoH, sumPJunioH, sumPJulioH, sumPAgostoH, sumPSeptiembreH, sumPOctubreH, sumPNoviembreH, sumPDiciembreH],
                 tension: .4,
@@ -423,19 +439,24 @@ const Graficas = () => {
         ]
     };
 
+
+    console.log(partosSR)
+
     const chartPartoNA = {
-        labels: ['Partos Naturales', 'Partos Asistidos'],
+        labels: ['Partos Naturales', 'Partos Asistidos', 'Sin registros'],
 
         datasets: [
             {
-                data: [sum5, sum6],
+                data: [partosN, partosA, partosSR],
                 backgroundColor: [
                     "#6a9eda",
                     "#a788ab",
+                    "#FF6347",
                 ],
                 hoverBackgroundColor: [
                     "#5086c1",
                     "#8f7193",
+                    "#FF6347",
                 ],
             }]
     };
@@ -497,7 +518,7 @@ const Graficas = () => {
         labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         datasets: [
             {
-                label: 'Machos',
+                label: 'MACHOS',
                 borderColor: '#42A5F5',
                 data: [sumEneroMM, sumFebreroMM, sumMarzoMM, sumAbrilMM, sumMayoMM, sumJunioMM, sumJulioMM, sumAgostoMM, sumSeptiembreMM, sumOctubreMM, sumNoviembreMM, sumDiciembreMM],
                 tension: .4,
@@ -505,7 +526,7 @@ const Graficas = () => {
 
             },
             {
-                label: 'Hembras',
+                label: 'HEMBRAS',
                 borderColor: '#00bb7e',
                 data: [sumEneroMH, sumFebreroMH, sumMarzoMH, sumAbrilMH, sumMayoMH, sumJunioMH, sumJulioMH, sumAgostoMH, sumSeptiembreMH, sumOctubreMH, sumNoviembreMH, sumDiciembreMH],
                 tension: .4,
@@ -673,13 +694,13 @@ const Graficas = () => {
                         <div className="flex justify-content-between mb-3">
                             <div>
                                 <span className="block text-600 font-medium mb-3">Muertes</span>
-                                <div className="text-900 font-medium text-xl">{muertes.length}</div>
+                                <div className="text-900 font-medium text-xl">{contadorMuertes}</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                                 <img alt="imgFooter" src="https://i.ibb.co/W2tpTG5/cow-virus-icon-140583.png"></img>
                             </div>
                         </div>
-                        <span className="text-green-500 font-medium">{muertesF.length}</span>
+                        <span className="text-green-500 font-medium">{contadorMuertesF}</span>
                         <span className="text-500">registros totales</span>
                     </div>
                 </div>
